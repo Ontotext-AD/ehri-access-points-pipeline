@@ -23,4 +23,11 @@
         <gate.version>8.0</gate.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:Ontotext-AD/ehri-access-points-pipeline.git</connection>
+        <developerConnection>scm:git:git@github.com:Ontotext-AD/ehri-access-points-pipeline.git</developerConnection>
+        <url>scm:git:git@github.com:Ontotext-AD/ehri-access-points-pipeline.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
 </project>
