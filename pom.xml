@@ -21,6 +21,7 @@
 
     <properties>
         <gate.version>8.0</gate.version>
+        <junit.version>4.10</junit.version>
     </properties>
 
     <scm>

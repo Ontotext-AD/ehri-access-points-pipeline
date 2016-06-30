@@ -198,7 +198,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
      * @param text The text.
      * @return The fingerprint of the text.
      */
-    private static String extractFingerprint(String text) {
+    public static String extractFingerprint(String text) {
         text = text.toLowerCase();
         text = Normalizer.normalize(text, Normalizer.Form.NFKD); // http://www.unicode.org/reports/tr15/#Norm_Forms
         text = text.replace(L_POLISH, 'l')

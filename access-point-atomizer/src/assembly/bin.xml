@@ -18,6 +18,7 @@
                 <include>creole.xml</include>
             </includes>
         </fileSet>
+
         <fileSet>
             <fileMode>644</fileMode>
             <directory>${project.build.directory}</directory>
