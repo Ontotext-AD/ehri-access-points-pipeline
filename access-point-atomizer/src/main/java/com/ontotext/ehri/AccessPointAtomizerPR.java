@@ -44,8 +44,8 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
             ")$");
 
 
-    // match tokens
-    private static final Pattern TOKEN_MATCH = Pattern.compile("[\\p{IsWord}]+");
+    // match tokens within atom
+    private static final Pattern TOKEN_MATCH = Pattern.compile("['\\p{IsWord}]+");
 
     // name of fingerprint feature
     private static final String FINGERPRINT_FEATURE = "fingerprint";
@@ -60,7 +60,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
 
     // combining characters to be deleted from fingerprint
     private static final Pattern COMBINING_CHARACTER = Pattern.compile("[" +
-            "'’" +
+            "'’`" +                                         // apostrophes
             "\\p{InSpacingModifierLetters}" +               // http://www.unicode.org/charts/PDF/U02B0.pdf
             "\\p{InCombiningDiacriticalMarks}" +            // http://www.unicode.org/charts/PDF/U0300.pdf
             "\\p{InCombiningDiacriticalMarksSupplement}" +  // http://www.unicode.org/charts/PDF/U1DC0.pdf
@@ -110,62 +110,60 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
             Node accessPointEnd = new NodeImpl(nodeID++, (long) accessPointMatcher.end());
             factory.createAnnotationInSet(outputAS, annotationID++, accessPointStart, accessPointEnd, ACCESS_POINT_TYPE, accessPointFeatures);
 
-            // set the start of the first atom to the start of the entire access point
+            // the start of the first atom is the start of the entire access point
             Matcher atomSplitter = ATOM_SPLIT.matcher(accessPointText);
-            Node atomStart = accessPointStart;
+            Node atomStart = new NodeImpl(nodeID++, accessPointStart.getOffset());
 
             // iterate through atom-boundary matches
             while (atomSplitter.find()) {
                 Node atomEnd = new NodeImpl(nodeID++, accessPointStart.getOffset() + (long) atomSplitter.start());
-                String atomText = extractText(content, atomStart, atomEnd);
-
-                // add annotation only if the atom is valid
-                if (isValidAtom(atomText)) {
-                    FeatureMap atomFeatures = new SimpleFeatureMapImpl();
-                    atomFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(atomText));
-                    factory.createAnnotationInSet(outputAS, annotationID++, atomStart, atomEnd, ATOM_TYPE, atomFeatures);
-
-                    Matcher tokenMatcher = TOKEN_MATCH.matcher(atomText);
-
-                    // iterate through token matches
-                    while (tokenMatcher.find()) {
-                        Node tokenStart = new NodeImpl(nodeID++, atomStart.getOffset() + (long) tokenMatcher.start());
-                        Node tokenEnd = new NodeImpl(nodeID++, atomStart.getOffset() + (long) tokenMatcher.end());
-                        String tokenText = extractText(content, tokenStart, tokenEnd);
-                        FeatureMap tokenFeatures = new SimpleFeatureMapImpl();
-                        tokenFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(tokenText));
-                        factory.createAnnotationInSet(outputAS, annotationID++, tokenStart, tokenEnd, TOKEN_TYPE, tokenFeatures);
-                    }
-                }
+                annotateAtom(factory, outputAS, content, atomStart, atomEnd);
 
                 // update the start of the next atom
                 atomStart = new NodeImpl(nodeID++, accessPointStart.getOffset() + (long) atomSplitter.end());
             }
 
-            // get the text of the last atom
-            String atomText = extractText(content, atomStart, accessPointEnd);
+            // the end of the last atom is the end of the entire access point
+            Node atomEnd = new NodeImpl(nodeID++, accessPointEnd.getOffset());
+            annotateAtom(factory, outputAS, content, atomStart, atomEnd);
+        }
+    }
 
-            if (isValidAtom(atomText)) {
-                FeatureMap atomFeatures = new SimpleFeatureMapImpl();
-                atomFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(atomText));
-                factory.createAnnotationInSet(outputAS, annotationID++, atomStart, accessPointEnd, ATOM_TYPE, atomFeatures);
+    /**
+     * Add an atom annotation.
+     *
+     * @param factory   The annotation factory.
+     * @param as        The annotation set.
+     * @param content   The document content.
+     * @param atomStart The start node of the atom.
+     * @param atomEnd   The end node of the atom.
+     */
+    private void annotateAtom(AnnotationFactory factory, AnnotationSet as, DocumentContent content, Node atomStart, Node atomEnd) {
+        String atomText = extractText(content, atomStart, atomEnd);
 
-                Matcher tokenMatcher = TOKEN_MATCH.matcher(atomText);
+        // add annotation only if the atom is valid
+        if (isValidAtom(atomText)) {
+            FeatureMap atomFeatures = new SimpleFeatureMapImpl();
+            atomFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(atomText));
+            factory.createAnnotationInSet(as, annotationID++, atomStart, atomEnd, ATOM_TYPE, atomFeatures);
 
-                while (tokenMatcher.find()) {
-                    Node tokenStart = new NodeImpl(nodeID++, atomStart.getOffset() + (long) tokenMatcher.start());
-                    Node tokenEnd = new NodeImpl(nodeID++, atomStart.getOffset() + (long) tokenMatcher.end());
-                    String tokenText = extractText(content, tokenStart, tokenEnd);
-                    FeatureMap tokenFeatures = new SimpleFeatureMapImpl();
-                    tokenFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(tokenText));
-                    factory.createAnnotationInSet(outputAS, annotationID++, tokenStart, tokenEnd, TOKEN_TYPE, tokenFeatures);
-                }
+            Matcher tokenMatcher = TOKEN_MATCH.matcher(atomText);
+
+            // iterate through token matches
+            while (tokenMatcher.find()) {
+                Node tokenStart = new NodeImpl(nodeID++, atomStart.getOffset() + (long) tokenMatcher.start());
+                Node tokenEnd = new NodeImpl(nodeID++, atomStart.getOffset() + (long) tokenMatcher.end());
+                String tokenText = extractText(content, tokenStart, tokenEnd);
+                FeatureMap tokenFeatures = new SimpleFeatureMapImpl();
+                tokenFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(tokenText));
+                factory.createAnnotationInSet(as, annotationID++, tokenStart, tokenEnd, TOKEN_TYPE, tokenFeatures);
             }
         }
     }
 
     /**
      * Check if an atom is valid.
+     *
      * @param atom The textual content of the candidate atom.
      * @return True if the atom is valid, otherwise - false.
      */
@@ -178,6 +176,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
 
     /**
      * Extract the text of a document part.
+     *
      * @param content The document content.
      * @param start   The start node of the part.
      * @param end     The end node of the part.
@@ -195,6 +194,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
 
     /**
      * Extract the fingerprint of some text.
+     *
      * @param text The text.
      * @return The fingerprint of the text.
      */
