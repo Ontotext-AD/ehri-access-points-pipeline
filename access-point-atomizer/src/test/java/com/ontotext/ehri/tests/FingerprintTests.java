@@ -11,7 +11,7 @@ public class FingerprintTests {
     public void testLowercasing() {
         assertEquals("text", extractFingerprint("text"));
         assertEquals("text", extractFingerprint("TEXT"));
-        assertEquals("tex", extractFingerprint("TExT"));
+        assertEquals("text", extractFingerprint("TExT"));
     }
 
     @Test

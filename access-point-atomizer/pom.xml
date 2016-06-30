@@ -31,7 +31,18 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+
         <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <includes>
+                        <include>com/ontotext/ehri/tests/*.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
