@@ -9,6 +9,8 @@ import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
+import gate.creole.metadata.Optional;
+import gate.creole.metadata.RunTime;
 import gate.util.InvalidOffsetException;
 import gate.util.SimpleFeatureMapImpl;
 
@@ -84,6 +86,8 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
     }
 
     @CreoleParameter(defaultValue = "", comment = "Name of the output annotation set.")
+    @Optional
+    @RunTime
     public void setOutputASName(String outputASName) {
         this.outputASName = outputASName;
     }
