@@ -1,6 +1,8 @@
 package com.ontotext.ehri;
 
 import com.ontotext.ehri.tybus.Index;
+import com.ontotext.ehri.tybus.Model;
+import gate.Annotation;
 import gate.Resource;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
@@ -10,10 +12,15 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
-@CreoleResource(name = "Typo Fixer", comment = "Fixes typos.")
+@CreoleResource(name = "Typo Fixer", comment = "Fixes typos using existing model.")
 public class TypoFixerPR extends AbstractLanguageAnalyser {
+    private static final String CORRECTION_FEATURE_NAME = "correction";
+
     private Index index;
 
     private String annotationSet;
@@ -73,7 +80,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(defaultValue = "1", comment = "Number of corrections to make (set to 0 for full correction).")
+    @CreoleParameter(defaultValue = "" + Index.DEFAULT_NUM_CORRECTIONS, comment = "Number of corrections to make (set to 0 for full correction).")
     public void setNumCorrections(Integer numCorrections) {
         this.numCorrections = numCorrections;
     }
@@ -82,7 +89,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         return minLength;
     }
 
-    @CreoleParameter(defaultValue = "5", comment = "Minimum length of correction or typo.")
+    @CreoleParameter(defaultValue = "" + Index.MIN_LENGTH, comment = "Minimum length of correction or typo.")
     public void setMinLength(Integer minLength) {
         this.minLength = minLength;
     }
@@ -91,7 +98,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         return minCorrectionFrequency;
     }
 
-    @CreoleParameter(defaultValue = "10", comment = "Minimum frequency of correction.")
+    @CreoleParameter(defaultValue = "" + Index.MIN_CORRECTION_FREQUENCY, comment = "Minimum frequency of correction.")
     public void setMinCorrectionFrequency(Integer minCorrectionFrequency) {
         this.minCorrectionFrequency = minCorrectionFrequency;
     }
@@ -100,7 +107,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         return maxTypoFrequency;
     }
 
-    @CreoleParameter(defaultValue = "10", comment = "Absolute maximum frequency of typo.")
+    @CreoleParameter(defaultValue = "" + Index.MAX_TYPO_FREQUENCY, comment = "Absolute maximum frequency of typo.")
     public void setMaxTypoFrequency(Integer maxTypoFrequency) {
         this.maxTypoFrequency = maxTypoFrequency;
     }
@@ -109,19 +116,49 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         return typoFrequencyRatio;
     }
 
-    @CreoleParameter(defaultValue = "0.1f", comment = "Typo-frequency to correction-frequency ratio.")
+    @CreoleParameter(defaultValue = "" + Index.TYPO_FREQUENCY_RATIO, comment = "Typo-frequency to correction-frequency ratio.")
     public void setTypoFrequencyRatio(Float typoFrequencyRatio) {
         this.typoFrequencyRatio = typoFrequencyRatio;
     }
 
     @Override
     public Resource init() throws ResourceInstantiationException {
-        // TODO: create index according to user preferences
+
+        try {
+            File modelFile = new File(modelFilePath.toURI());
+
+            System.out.println("deserializing model from file: " + modelFile.getAbsolutePath());
+            Model model = Model.deserialize(modelFile);
+
+            System.out.println("building index from model");
+            long start = System.currentTimeMillis();
+            index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio);
+            long time = System.currentTimeMillis() - start;
+            System.out.println("index built in " + time + " ms");
+            System.out.println("number of corrections in index: " + index.numCorrections());
+
+        } catch (URISyntaxException | ClassNotFoundException | IOException e) {
+            throw new ResourceInstantiationException(e.getMessage(), e);
+        }
+
         return this;
     }
 
     @Override
     public void execute() throws ExecutionException {
-        // TODO: bust typos with index
+
+        for (Annotation annotation : document.getAnnotations(annotationSet).get(annotationType)) {
+            Object featureValue = annotation.getFeatures().get(annotationFeature);
+            if (featureValue == null) continue;
+
+            String correction;
+            if (numCorrections < 1) {
+                correction = index.correctFully(featureValue.toString());
+            } else {
+                correction = index.correct(featureValue.toString(), numCorrections);
+            }
+
+            annotation.getFeatures().put(CORRECTION_FEATURE_NAME, correction);
+        }
     }
 }

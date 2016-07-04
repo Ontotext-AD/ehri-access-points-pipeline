@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-@CreoleResource(name = "Typo Learner", comment = "Learns typos.")
+@CreoleResource(name = "Typo Learner", comment = "Learns typos and creates or updates a model.")
 public class TypoLearnerPR extends AbstractLanguageAnalyser {
     private String annotationSet;
     private String annotationType;
@@ -89,10 +89,10 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
             System.out.println("total number of distinct tokens in model: " + model.numDistinctTokens());
             System.out.println("serializing model to file: " + modelFile.getAbsolutePath());
             Model.serialize(model, modelFile);
-            System.out.println("done");
+            System.out.println("serialization finished");
 
         } catch (URISyntaxException | IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new ExecutionException(e.getMessage(), e);
         }
     }
 }
