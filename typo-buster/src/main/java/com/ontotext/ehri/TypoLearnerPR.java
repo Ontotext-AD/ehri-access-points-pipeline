@@ -78,15 +78,14 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
             }
 
             System.out.println("adding tokens to model");
-            int count = 0;
-
             for (Annotation annotation : document.getAnnotations(annotationSet).get(annotationType)) {
-                model.addToken(annotation.getFeatures().get(annotationFeature).toString());
-                count++;
+                Object featureValue = annotation.getFeatures().get(annotationFeature);
+                if (featureValue == null) continue;
+
+                model.addToken(featureValue.toString());
             }
 
-            System.out.println("number of processed tokens from document: " + count);
-            System.out.println("total number of distinct tokens in model: " + model.numDistinctTokens());
+            System.out.println("number of distinct tokens in model: " + model.numDistinctTokens());
             System.out.println("serializing model to file: " + modelFile.getAbsolutePath());
             Model.serialize(model, modelFile);
             System.out.println("serialization finished");
