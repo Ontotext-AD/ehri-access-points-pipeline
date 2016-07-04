@@ -27,7 +27,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
 
     @Optional
     @RunTime
-    @CreoleParameter(defaultValue = "", comment = "Name of the annotation set.")
+    @CreoleParameter(defaultValue = "", comment = "Name of the annotation set to learn typos from.")
     public void setAnnotationSet(String annotationSet) {
         this.annotationSet = annotationSet;
     }
@@ -37,7 +37,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(defaultValue = "Token", comment = "Name of the annotation type.")
+    @CreoleParameter(defaultValue = "Token", comment = "Name of the annotation type to learn typos from.")
     public void setAnnotationType(String annotationType) {
         this.annotationType = annotationType;
     }
@@ -47,7 +47,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(defaultValue = "fingerprint", comment = "Name of the annotation feature.")
+    @CreoleParameter(defaultValue = "fingerprint", comment = "Name of the annotation feature to learn typos from.")
     public void setAnnotationFeature(String annotationFeature) {
         this.annotationFeature = annotationFeature;
     }
@@ -57,7 +57,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(defaultValue = "model.gz", comment = "Path to the model file.")
+    @CreoleParameter(defaultValue = "model.gz", comment = "Path to the model file to create or update.")
     public void setModelFilePath(URL modelFilePath) {
         this.modelFilePath = modelFilePath;
     }
