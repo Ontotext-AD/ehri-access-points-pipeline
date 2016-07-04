@@ -69,7 +69,7 @@ public class Model implements Serializable {
         return length2tokens.size();
     }
 
-    public int numTokens() {
+    public int numDistinctTokens() {
         return string2token.size();
     }
 

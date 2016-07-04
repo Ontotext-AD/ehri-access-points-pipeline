@@ -37,7 +37,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(comment = "Name of the annotation type.")
+    @CreoleParameter(defaultValue = "Token", comment = "Name of the annotation type.")
     public void setAnnotationType(String annotationType) {
         this.annotationType = annotationType;
     }
@@ -47,7 +47,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(comment = "Name of the annotation feature.")
+    @CreoleParameter(defaultValue = "fingerprint", comment = "Name of the annotation feature.")
     public void setAnnotationFeature(String annotationFeature) {
         this.annotationFeature = annotationFeature;
     }
@@ -57,7 +57,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(comment = "Path to the model file.")
+    @CreoleParameter(defaultValue = "model.gz", comment = "Path to the model file.")
     public void setModelFilePath(URL modelFilePath) {
         this.modelFilePath = modelFilePath;
     }
@@ -78,15 +78,18 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
             }
 
             System.out.println("adding tokens to model");
+            int count = 0;
+
             for (Annotation annotation : document.getAnnotations(annotationSet).get(annotationType)) {
                 model.addToken(annotation.getFeatures().get(annotationFeature).toString());
+                count++;
             }
 
-            System.out.println("number of distinct tokens in model: " + model.numTokens());
+            System.out.println("number of processed tokens from document: " + count);
+            System.out.println("total number of distinct tokens in model: " + model.numDistinctTokens());
             System.out.println("serializing model to file: " + modelFile.getAbsolutePath());
             Model.serialize(model, modelFile);
             System.out.println("done");
-            System.out.println(model.toString());
 
         } catch (URISyntaxException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
