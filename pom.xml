@@ -17,6 +17,7 @@
 
     <modules>
         <module>access-point-atomizer</module>
+        <module>typo-buster</module>
     </modules>
 
     <properties>
