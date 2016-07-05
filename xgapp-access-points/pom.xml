@@ -55,6 +55,22 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/plugins</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.ontotext.ehri</groupId>
+                                    <artifactId>access-point-atomizer</artifactId>
+                                    <version>${access-point-atomizer.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/plugins</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.ontotext.ehri</groupId>
+                                    <artifactId>typo-buster</artifactId>
+                                    <version>${typo-buster.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/plugins</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
