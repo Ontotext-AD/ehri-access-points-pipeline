@@ -47,6 +47,15 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
+                                    <groupId>uk.ac.gate.plugins</groupId>
+                                    <artifactId>annie</artifactId>
+                                    <version>${annie.version}</version>
+                                    <classifier>creole-bin</classifier>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/plugins</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>com.ontotext.gate</groupId>
                                     <artifactId>gazetteer</artifactId>
                                     <version>${gazetteer.version}</version>

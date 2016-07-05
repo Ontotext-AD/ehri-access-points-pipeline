@@ -23,6 +23,7 @@
 
     <properties>
         <gate.version>8.0</gate.version>
+        <annie.version>8.0.1</annie.version>
         <gazetteer.version>5.0.0</gazetteer.version>
         <access-point-atomizer.version>0.0.1</access-point-atomizer.version>
         <typo-buster.version>0.0.1</typo-buster.version>
