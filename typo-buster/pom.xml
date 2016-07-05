@@ -27,6 +27,13 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.ontotext.commons.pub</groupId>
+            <artifactId>commons-acceptance-tests</artifactId>
+            <version>${commons-acceptance-tests.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
