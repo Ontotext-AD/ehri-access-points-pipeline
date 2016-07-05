@@ -1,7 +1,15 @@
 {
   "pipeline_id": "xgapp-access-points",
   "repository": "internal",
-  "indexes_directory_name": "xgapp-access-points-indexes",
+  "indexes_directory_name": "xgapp-indexes",
   "dependencies": [
+    {
+      "target_dir": "typo-model",
+      "index": true,
+      "groupId": "com.ontotext.ehri",
+      "artifactId": "typo-model",
+      "version": "0.0.1",
+      "type": "zip"
+    }
   ]
 }
