@@ -9,6 +9,8 @@ import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
+import gate.creole.metadata.Optional;
+import gate.creole.metadata.RunTime;
 import gate.util.InvalidOffsetException;
 import gate.util.SimpleFeatureMapImpl;
 
@@ -84,6 +86,8 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
     }
 
     @CreoleParameter(defaultValue = "", comment = "Name of the output annotation set.")
+    @Optional
+    @RunTime
     public void setOutputASName(String outputASName) {
         this.outputASName = outputASName;
     }
@@ -142,7 +146,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
         String atomText = extractText(content, atomStart, atomEnd);
 
         // add annotation only if the atom is valid
-        if (isValidAtom(atomText)) {
+        if (atomText != null && atomText.length() > 0 && ! ATOM_FILTER.matcher(atomText).matches()) {
             FeatureMap atomFeatures = new SimpleFeatureMapImpl();
             atomFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(atomText));
             factory.createAnnotationInSet(as, annotationID++, atomStart, atomEnd, ATOM_TYPE, atomFeatures);
@@ -159,19 +163,6 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
                 factory.createAnnotationInSet(as, annotationID++, tokenStart, tokenEnd, TOKEN_TYPE, tokenFeatures);
             }
         }
-    }
-
-    /**
-     * Check if an atom is valid.
-     *
-     * @param atom The textual content of the candidate atom.
-     * @return True if the atom is valid, otherwise - false.
-     */
-    private static boolean isValidAtom(String atom) {
-        if (atom == null) return false;
-        if (atom.length() == 0) return false;
-        if (ATOM_FILTER.matcher(atom).matches()) return false;
-        return true;
     }
 
     /**
