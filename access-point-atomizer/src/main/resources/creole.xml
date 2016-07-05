@@ -1,0 +1,5 @@
+<CREOLE-DIRECTORY>
+    <CREOLE>
+        <JAR SCAN="true">access-point-atomizer.jar</JAR>
+    </CREOLE>
+</CREOLE-DIRECTORY>

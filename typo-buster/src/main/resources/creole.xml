@@ -1,0 +1,5 @@
+<CREOLE-DIRECTORY>
+    <CREOLE>
+        <JAR SCAN="true">typo-buster.jar</JAR>
+    </CREOLE>
+</CREOLE-DIRECTORY>
