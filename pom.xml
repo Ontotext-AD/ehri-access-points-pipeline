@@ -18,10 +18,12 @@
     <modules>
         <module>access-point-atomizer</module>
         <module>typo-buster</module>
+        <module>xgapp-access-points</module>
     </modules>
 
     <properties>
         <gate.version>8.0</gate.version>
+        <gazetteer.version>5.0.0</gazetteer.version>
         <junit.version>4.10</junit.version>
         <surefire.version>2.19.1</surefire.version>
         <commons-acceptance-tests.version>1.2.1</commons-acceptance-tests.version>
