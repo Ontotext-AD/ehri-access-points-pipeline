@@ -1,0 +1,7 @@
+{
+  "pipeline_id": "xgapp-access-points",
+  "repository": "internal",
+  "indexes_directory_name": "xgapp-access-points-indexes",
+  "dependencies": [
+  ]
+}
