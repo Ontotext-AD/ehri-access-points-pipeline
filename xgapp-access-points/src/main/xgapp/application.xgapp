@@ -69,100 +69,127 @@
         </gate.util.persistence.AnalyserRunningStrategyPersistence>
         <gate.util.persistence.AnalyserRunningStrategyPersistence>
           <runMode>1</runMode>
-          <featureName></featureName>
-          <featureValue></featureValue>
-          <pr class="gate.util.persistence.LanguageAnalyserPersistence">
-            <runtimeParams class="gate.util.persistence.MapPersistence">
-              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap>
-                <entry>
-                  <string>outputASName</string>
-                  <string>EHRI</string>
-                </entry>
-                <entry>
-                  <string>corpus</string>
-                  <null/>
-                </entry>
-                <entry>
-                  <string>document</string>
-                  <null/>
-                </entry>
-              </localMap>
-            </runtimeParams>
-            <resourceType>com.ontotext.ehri.AccessPointAtomizerPR</resourceType>
-            <resourceName>Access Point Atomizer</resourceName>
+          <pr class="gate.util.persistence.ConditionalSerialAnalyserControllerPersistence">
+            <strategiesList class="gate.util.persistence.CollectionPersistence">
+              <localList>
+                <gate.util.persistence.AnalyserRunningStrategyPersistence>
+                  <runMode>1</runMode>
+                  <featureName></featureName>
+                  <featureValue></featureValue>
+                  <pr class="gate.util.persistence.LanguageAnalyserPersistence">
+                    <runtimeParams class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap>
+                        <entry>
+                          <string>outputASName</string>
+                          <string></string>
+                        </entry>
+                        <entry>
+                          <string>corpus</string>
+                          <null/>
+                        </entry>
+                        <entry>
+                          <string>document</string>
+                          <null/>
+                        </entry>
+                      </localMap>
+                    </runtimeParams>
+                    <resourceType>com.ontotext.ehri.AccessPointAtomizerPR</resourceType>
+                    <resourceName>Access Point Atomizer</resourceName>
+                    <initParams class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap/>
+                    </initParams>
+                    <features class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap/>
+                    </features>
+                  </pr>
+                </gate.util.persistence.AnalyserRunningStrategyPersistence>
+                <gate.util.persistence.AnalyserRunningStrategyPersistence>
+                  <runMode>1</runMode>
+                  <featureName></featureName>
+                  <featureValue></featureValue>
+                  <pr class="gate.util.persistence.LanguageAnalyserPersistence">
+                    <runtimeParams class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap>
+                        <entry>
+                          <string>annotationType</string>
+                          <string>Token</string>
+                        </entry>
+                        <entry>
+                          <string>annotationSet</string>
+                          <string></string>
+                        </entry>
+                        <entry>
+                          <string>corpus</string>
+                          <null/>
+                        </entry>
+                        <entry>
+                          <string>numCorrections</string>
+                          <int>1</int>
+                        </entry>
+                        <entry>
+                          <string>annotationFeature</string>
+                          <string>fingerprint</string>
+                        </entry>
+                        <entry>
+                          <string>document</string>
+                          <null/>
+                        </entry>
+                      </localMap>
+                    </runtimeParams>
+                    <resourceType>com.ontotext.ehri.TypoFixerPR</resourceType>
+                    <resourceName>Typo Fixer</resourceName>
+                    <initParams class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap>
+                        <entry>
+                          <string>maxTypoFrequency</string>
+                          <int>10</int>
+                        </entry>
+                        <entry>
+                          <string>minCorrectionFrequency</string>
+                          <int>10</int>
+                        </entry>
+                        <entry>
+                          <string>modelFilePath</string>
+                          <gate.util.persistence.PersistenceManager-URLHolder>
+                            <urlString>$relpath$../xgapp-indexes/typo-model/model.gz</urlString>
+                          </gate.util.persistence.PersistenceManager-URLHolder>
+                        </entry>
+                        <entry>
+                          <string>typoFrequencyRatio</string>
+                          <float>0.1</float>
+                        </entry>
+                        <entry>
+                          <string>minLength</string>
+                          <int>5</int>
+                        </entry>
+                      </localMap>
+                    </initParams>
+                    <features class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap/>
+                    </features>
+                  </pr>
+                </gate.util.persistence.AnalyserRunningStrategyPersistence>
+              </localList>
+              <collectionType>java.util.ArrayList</collectionType>
+            </strategiesList>
+            <prList class="gate.util.persistence.CollectionPersistence">
+              <localList>
+                <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr"/>
+                <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr"/>
+              </localList>
+              <collectionType>java.util.ArrayList</collectionType>
+            </prList>
+            <resourceType>gate.creole.ConditionalSerialAnalyserController</resourceType>
+            <resourceName>Tokenization</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap/>
-            </initParams>
-            <features class="gate.util.persistence.MapPersistence">
-              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap/>
-            </features>
-          </pr>
-        </gate.util.persistence.AnalyserRunningStrategyPersistence>
-        <gate.util.persistence.AnalyserRunningStrategyPersistence>
-          <runMode>1</runMode>
-          <featureName></featureName>
-          <featureValue></featureValue>
-          <pr class="gate.util.persistence.LanguageAnalyserPersistence">
-            <runtimeParams class="gate.util.persistence.MapPersistence">
-              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap>
-                <entry>
-                  <string>annotationSet</string>
-                  <string>EHRI</string>
-                </entry>
-                <entry>
-                  <string>annotationType</string>
-                  <string>Token</string>
-                </entry>
-                <entry>
-                  <string>corpus</string>
-                  <null/>
-                </entry>
-                <entry>
-                  <string>numCorrections</string>
-                  <int>1</int>
-                </entry>
-                <entry>
-                  <string>annotationFeature</string>
-                  <string>fingerprint</string>
-                </entry>
-                <entry>
-                  <string>document</string>
-                  <null/>
-                </entry>
-              </localMap>
-            </runtimeParams>
-            <resourceType>com.ontotext.ehri.TypoFixerPR</resourceType>
-            <resourceName>Typo Fixer</resourceName>
-            <initParams class="gate.util.persistence.MapPersistence">
-              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap>
-                <entry>
-                  <string>maxTypoFrequency</string>
-                  <int>10</int>
-                </entry>
-                <entry>
-                  <string>minCorrectionFrequency</string>
-                  <int>10</int>
-                </entry>
-                <entry>
-                  <string>modelFilePath</string>
-                  <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$../xgapp-indexes/typo-model/model.gz</urlString>
-                  </gate.util.persistence.PersistenceManager-URLHolder>
-                </entry>
-                <entry>
-                  <string>typoFrequencyRatio</string>
-                  <float>0.1</float>
-                </entry>
-                <entry>
-                  <string>minLength</string>
-                  <int>5</int>
-                </entry>
-              </localMap>
             </initParams>
             <features class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
@@ -176,8 +203,7 @@
     <prList class="gate.util.persistence.CollectionPersistence">
       <localList>
         <gate.util.persistence.PRPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr"/>
-        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr"/>
-        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[3]/pr"/>
+        <gate.util.persistence.ConditionalSerialAnalyserControllerPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr"/>
       </localList>
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
