@@ -1,10 +1,10 @@
 PREFIX geo: <http://www.geonames.org/ontology#>
 PREFIX pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
-SELECT ?concept ?type ?class ?parent ?country ?latitude ?longitude ?population WHERE {
+SELECT ?concept ?type ?class ?ancestor ?country ?latitude ?longitude ?population WHERE {
     ?concept geo:featureCode ?type.
     ?concept geo:featureClass ?class.
-    ?concept geo:parentFeature ?parent.
+    ?concept geo:parentFeature+ ?ancestor.
     ?concept geo:countryCode ?country.
     ?concept pos:lat ?latitude.
     ?concept pos:long ?longitude.
