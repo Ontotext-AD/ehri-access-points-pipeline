@@ -248,7 +248,6 @@
                                   <gate.util.persistence.CollectionPersistence>
                                     <localList>
                                       <string>correction</string>
-                                      <string>fingerprint</string>
                                     </localList>
                                     <collectionType>java.util.ArrayList</collectionType>
                                   </gate.util.persistence.CollectionPersistence>
