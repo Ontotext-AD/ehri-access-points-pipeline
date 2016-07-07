@@ -1,12 +1,14 @@
 PREFIX geo: <http://www.geonames.org/ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?concept ?type ?literal WHERE {
+    ?concept rdf:type geo:Feature.
     ?concept geo:featureCode ?type.
     ?concept geo:featureClass ?class.
     ?concept geo:countryCode ?country.
 
     # get all names
-    { ?concept geo:name ?literal } UNION { ?concept geo:officialName ?literal } UNION { ?concept geo:alternateName ?literal }
+    ?concept geo:name | geo:officialName | geo:alternateName ?literal.
 
     # allow only specific classes and codes globally
     FILTER(?class = geo:A || ?class = geo:P

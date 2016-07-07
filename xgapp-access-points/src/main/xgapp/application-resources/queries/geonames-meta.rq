@@ -1,15 +1,23 @@
 PREFIX geo: <http://www.geonames.org/ontology#>
 PREFIX pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?concept ?type ?class ?ancestor ?country ?latitude ?longitude ?population WHERE {
+SELECT ?concept ?type (COUNT(?literal) AS ?numLabels) ?latitude ?longitude ?ancestors ?population ?wikipediaLinks WHERE {
+    ?concept rdf:type geo:Feature.
     ?concept geo:featureCode ?type.
     ?concept geo:featureClass ?class.
-    ?concept geo:parentFeature+ ?ancestor.
     ?concept geo:countryCode ?country.
     ?concept pos:lat ?latitude.
     ?concept pos:long ?longitude.
 
+    # get all names
+    ?concept geo:name | geo:officialName | geo:alternateName ?literal.
+
+    # get all ancestors transitively
+    ?concept geo:parentFeature+ ?ancestors.
+
     OPTIONAL { ?concept geo:population ?population }
+    OPTIONAL { ?concept geo:wikipediaArticle ?wikipediaLinks }
 
     # allow only specific classes and codes globally
     FILTER(?class = geo:A || ?class = geo:P
