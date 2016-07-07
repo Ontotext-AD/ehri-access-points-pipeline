@@ -64,4 +64,4 @@ SELECT ?concept ?type (COUNT(?literal) AS ?numLabels) ?latitude ?longitude ?ance
         || ?country = "UA"
         || ?country = "XK"
     )
-}
+} GROUP BY ?concept ?type ?latitude ?longitude ?ancestors ?population ?wikipediaLinks
