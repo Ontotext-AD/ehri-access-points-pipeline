@@ -22,6 +22,7 @@
 
     <properties>
         <gate.version>8.0</gate.version>
+        <commons-codec.version>1.10</commons-codec.version>
         <junit.version>4.10</junit.version>
         <surefire.version>2.19.1</surefire.version>
         <commons-acceptance-tests.version>1.2.1</commons-acceptance-tests.version>

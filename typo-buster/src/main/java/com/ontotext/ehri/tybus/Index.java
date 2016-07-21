@@ -1,5 +1,10 @@
 package com.ontotext.ehri.tybus;
 
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+import org.apache.commons.codec.language.ColognePhonetic;
+import org.apache.commons.codec.language.DoubleMetaphone;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,6 +27,12 @@ import java.util.NavigableSet;
  * - all differing characters are lowercase letters.
  */
 public class Index implements Serializable {
+
+    // encoders for checking phonetic equivalence
+    private static final StringEncoder[] PHONETIC_ENCODERS = {
+            new ColognePhonetic(),
+            new DoubleMetaphone()
+    };
 
     // default number of corrections to make
     public static final int DEFAULT_NUM_CORRECTIONS = 1;
@@ -234,6 +245,32 @@ public class Index implements Serializable {
      */
     private static boolean isValidChar(char c) {
         return Character.isLowerCase(c);
+    }
+
+    /**
+     * Check if two strings are phonetically equivalent.
+     *
+     * @param one The first string.
+     * @param two The second string.
+     * @return True if the two string are phonetically equivalent according to at least one algorithm. False otherwise.
+     */
+    private static boolean isPhoneticallyEquivalent(String one, String two) {
+
+        // try each phonetic encoder in order
+        for (StringEncoder encoder : PHONETIC_ENCODERS) {
+
+            // return true if at least one encoder finds them equivalent
+            try {
+                String oneEncoded = encoder.encode(one);
+                String twoEncoded = encoder.encode(two);
+                if (oneEncoded.equals(twoEncoded)) return true;
+            } catch (EncoderException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // return false if no encoder finds them equivalent
+        return false;
     }
 
     /**
