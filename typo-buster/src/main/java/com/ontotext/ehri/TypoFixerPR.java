@@ -34,6 +34,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
     Integer minCorrectionFrequency;
     Integer maxTypoFrequency;
     Float typoFrequencyRatio;
+    Boolean checkPhonetics;
 
     public String getAnnotationSet() {
         return annotationSet;
@@ -121,6 +122,15 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         this.typoFrequencyRatio = typoFrequencyRatio;
     }
 
+    public Boolean getCheckPhonetics() {
+        return checkPhonetics;
+    }
+
+    @CreoleParameter(defaultValue = "" + Index.CHECK_PHONETICS, comment = "Toggle phonetic check.")
+    public void setCheckPhonetics(Boolean checkPhonetics) {
+        this.checkPhonetics = checkPhonetics;
+    }
+
     @Override
     public Resource init() throws ResourceInstantiationException {
 
@@ -132,7 +142,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
 
             System.out.println("building index from model");
             long start = System.currentTimeMillis();
-            index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio);
+            index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio, checkPhonetics);
             long time = System.currentTimeMillis() - start;
             System.out.println("index built in " + time + " ms");
             System.out.println("number of corrections in index: " + index.numCorrections());

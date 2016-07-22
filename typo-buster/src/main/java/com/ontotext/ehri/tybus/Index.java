@@ -48,7 +48,7 @@ public class Index implements Serializable {
     public static final float TYPO_FREQUENCY_RATIO = 0.1f;
 
     // toggle phonetic check
-    private static final boolean CHECK_PHONETICS = true;
+    public static final boolean CHECK_PHONETICS = true;
 
     private Map<String, String> typo2correction;
 
