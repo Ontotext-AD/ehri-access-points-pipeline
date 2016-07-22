@@ -1,5 +1,6 @@
 package com.ontotext.ehri;
 
+import com.ontotext.ehri.tools.Serialization;
 import com.ontotext.ehri.tybus.Index;
 import com.ontotext.ehri.tybus.Model;
 import gate.Annotation;
@@ -138,7 +139,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
             File modelFile = new File(modelFilePath.toURI());
 
             System.out.println("deserializing model from file: " + modelFile.getAbsolutePath());
-            Model model = Model.deserialize(modelFile);
+            Model model = (Model) Serialization.deserialize(modelFile);
 
             System.out.println("building index from model");
             long start = System.currentTimeMillis();
