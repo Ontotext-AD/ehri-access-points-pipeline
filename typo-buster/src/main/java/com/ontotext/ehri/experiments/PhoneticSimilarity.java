@@ -29,8 +29,13 @@ public class PhoneticSimilarity {
 
     public static void main(String[] args) {
 
-        if (args.length != 2) {
+        if (args.length == 0) {
             System.out.println("USAGE: java " + PhoneticSimilarity.class.getName() + " <input file> <output file>");
+            System.exit(1);
+        }
+
+        if (args.length < 2) {
+            System.err.println("Not enough arguments!");
             System.exit(1);
         }
 

@@ -3,6 +3,7 @@ package com.ontotext.ehri.tests;
 import com.ontotext.acceptance.ClasspathUtils;
 import com.ontotext.ehri.TypoFixerPR;
 import com.ontotext.ehri.TypoLearnerPR;
+import com.ontotext.ehri.tools.Serialization;
 import com.ontotext.ehri.tybus.Index;
 import com.ontotext.ehri.tybus.Model;
 import gate.Annotation;
@@ -53,7 +54,7 @@ public class TypoBusterTests {
 			learner.execute();
 
 			// check model
-			Model model = Model.deserialize(modelFile);
+			Model model = (Model) Serialization.deserialize(modelFile);
 			assertNotNull(model);
 			assertEquals("unexpected number of distinct tokens", 893, model.numDistinctTokens());
 			assertEquals("unexpected maximum token length", 19, model.maxTokenLength());
