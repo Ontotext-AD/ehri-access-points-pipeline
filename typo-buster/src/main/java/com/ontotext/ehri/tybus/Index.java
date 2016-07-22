@@ -2,8 +2,7 @@ package com.ontotext.ehri.tybus;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
-import org.apache.commons.codec.language.ColognePhonetic;
-import org.apache.commons.codec.language.DoubleMetaphone;
+import org.apache.commons.codec.language.Caverphone2;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -30,8 +29,7 @@ public class Index implements Serializable {
 
     // encoders for checking phonetic equivalence
     private static final StringEncoder[] PHONETIC_ENCODERS = {
-            new ColognePhonetic(),
-            new DoubleMetaphone()
+            new Caverphone2()
     };
 
     // default number of corrections to make
@@ -49,6 +47,9 @@ public class Index implements Serializable {
     // typo-frequency to correction-frequency ratio
     public static final float TYPO_FREQUENCY_RATIO = 0.1f;
 
+    // toggle phonetic check
+    private static final boolean CHECK_PHONETICS = true;
+
     private Map<String, String> typo2correction;
 
     /**
@@ -57,7 +58,7 @@ public class Index implements Serializable {
      * @param model The model to build from.
      */
     public Index(Model model) {
-        this(model, MIN_LENGTH, MIN_CORRECTION_FREQUENCY, MAX_TYPO_FREQUENCY, TYPO_FREQUENCY_RATIO);
+        this(model, MIN_LENGTH, MIN_CORRECTION_FREQUENCY, MAX_TYPO_FREQUENCY, TYPO_FREQUENCY_RATIO, CHECK_PHONETICS);
     }
 
     /**
@@ -68,8 +69,9 @@ public class Index implements Serializable {
      * @param minCorrectionFrequency Minimum frequency of correction.
      * @param maxTypoFrequency       Absolute maximum frequency of typo.
      * @param typoFrequencyRatio     Typo-frequency to correction-frequency ratio.
+     * @param checkPhonetics         Check phonetics (or not).
      */
-    public Index(Model model, int minLength, int minCorrectionFrequency, int maxTypoFrequency, float typoFrequencyRatio) {
+    public Index(Model model, int minLength, int minCorrectionFrequency, int maxTypoFrequency, float typoFrequencyRatio, boolean checkPhonetics) {
         int maxLength = model.maxTokenLength();
         typo2correction = new HashMap<>();
 
@@ -95,7 +97,8 @@ public class Index implements Serializable {
 
                     // check for alteration or transposition
                     String typo = typoToken.getContent();
-                    if (isAlterationOrTransposition(typo, correction)) typo2correction.put(typo, correction);
+                    if (isAlterationOrTransposition(typo, correction, checkPhonetics))
+                        typo2correction.put(typo, correction);
                 }
 
                 // find lower-length typos
@@ -106,7 +109,7 @@ public class Index implements Serializable {
 
                         // check for deletion
                         String typo = typoToken.getContent();
-                        if (isDeletion(typo, correction)) typo2correction.put(typo, correction);
+                        if (isDeletion(typo, correction, checkPhonetics)) typo2correction.put(typo, correction);
                     }
                 }
 
@@ -118,7 +121,7 @@ public class Index implements Serializable {
 
                         // check for insertion
                         String typo = typoToken.getContent();
-                        if (isInsertion(typo, correction)) typo2correction.put(typo, correction);
+                        if (isInsertion(typo, correction, checkPhonetics)) typo2correction.put(typo, correction);
                     }
                 }
             }
@@ -179,11 +182,12 @@ public class Index implements Serializable {
      * Check if a string is an alteration or transposition of another string.
      * The two strings are assumed to have equal lengths.
      *
-     * @param one A string.
-     * @param two A string.
+     * @param one            A string.
+     * @param two            A string.
+     * @param checkPhonetics Check phonetics (or not).
      * @return True if one of the string is an alteration or transposition of the other string. False otherwise.
      */
-    private static boolean isAlterationOrTransposition(String one, String two) {
+    private static boolean isAlterationOrTransposition(String one, String two, boolean checkPhonetics) {
         int maxLength = one.length();
         int commonPrefixLength = commonPrefixLength(one, two, maxLength);
         int commonSuffixLength = commonSuffixLength(one, two, maxLength);
@@ -192,7 +196,8 @@ public class Index implements Serializable {
         // check for alteration
         if (sumCommonLengths == maxLength - 1 &&
                 isValidChar(one.charAt(commonPrefixLength)) &&
-                isValidChar(two.charAt(commonPrefixLength))) return true;
+                isValidChar(two.charAt(commonPrefixLength)) &&
+                (!checkPhonetics || isPhoneticallyEquivalent(one, two))) return true;
 
         // check for transposition
         if (sumCommonLengths == maxLength - 2 &&
@@ -208,11 +213,12 @@ public class Index implements Serializable {
      * Check if the first string is a deletion of the second string.
      * The first string is assumed to be one character shorter than the second string.
      *
-     * @param deletion The shorter string.
-     * @param original The longer string.
+     * @param deletion       The shorter string.
+     * @param original       The longer string.
+     * @param checkPhonetics Check phonetics (or not).
      * @return True if the first string is a deletion of the second string. False otherwise.
      */
-    private static boolean isDeletion(String deletion, String original) {
+    private static boolean isDeletion(String deletion, String original, boolean checkPhonetics) {
         int maxLength = deletion.length();
         int commonPrefixLength = commonPrefixLength(deletion, original, maxLength);
         int commonSuffixLength = commonSuffixLength(deletion, original, maxLength);
@@ -220,7 +226,8 @@ public class Index implements Serializable {
 
         // check for deletion
         if ((sumCommonLengths == deletion.length() || sumCommonLengths == original.length()) &&
-                isValidChar(original.charAt(commonPrefixLength))) return true;
+                isValidChar(original.charAt(commonPrefixLength)) &&
+                (!checkPhonetics || isPhoneticallyEquivalent(deletion, original))) return true;
 
         return false;
     }
@@ -229,12 +236,13 @@ public class Index implements Serializable {
      * Check if the first string is an insertion of the second string.
      * The first string is assumed to be one character longer than the second string.
      *
-     * @param insertion The longer string.
-     * @param original  The shorter string.
+     * @param insertion      The longer string.
+     * @param original       The shorter string.
+     * @param checkPhonetics Check phonetics (or not).
      * @return True if the first string is an insertion of the second string. False otherwise.
      */
-    private static boolean isInsertion(String insertion, String original) {
-        return isDeletion(original, insertion);
+    private static boolean isInsertion(String insertion, String original, boolean checkPhonetics) {
+        return isDeletion(original, insertion, checkPhonetics);
     }
 
     /**
