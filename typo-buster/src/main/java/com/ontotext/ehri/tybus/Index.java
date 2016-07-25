@@ -88,6 +88,7 @@ public class Index implements Serializable {
 
                 // calculate the relative maximum typo frequency
                 int maxTypoFrequencyRel = Math.round(typoFrequencyRatio * correctionFrequency);
+                maxTypoFrequencyRel = Math.min(maxTypoFrequencyRel, correctionFrequency - 1);
                 maxTypoFrequencyRel = Math.min(maxTypoFrequencyRel, maxTypoFrequency);
                 String correction = correctionToken.getContent();
 
