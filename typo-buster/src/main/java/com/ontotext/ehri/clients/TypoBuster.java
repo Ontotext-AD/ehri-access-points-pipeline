@@ -1,5 +1,6 @@
 package com.ontotext.ehri.clients;
 
+import com.ontotext.ehri.tools.Models;
 import com.ontotext.ehri.tools.Serialization;
 import com.ontotext.ehri.tybus.Index;
 import com.ontotext.ehri.tybus.Model;
@@ -32,16 +33,7 @@ public class TypoBuster {
             Model model = new Model();
 
             try {
-                BufferedReader reader = new BufferedReader(new FileReader(args[0]));
-                String token;
-
-                while ((token = reader.readLine()) != null) {
-                    token = token.trim();
-                    model.addToken(token);
-                }
-
-                reader.close();
-
+                Models.extendModel(model, new File(args[0]));
             } catch (IOException e) {
                 e.printStackTrace();
             }
