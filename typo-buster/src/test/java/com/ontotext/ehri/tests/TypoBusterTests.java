@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class TypoBusterTests {
@@ -71,6 +72,7 @@ public class TypoBusterTests {
 			fixer.setMinCorrectionFrequency(Index.MIN_CORRECTION_FREQUENCY);
 			fixer.setMaxTypoFrequency(Index.MAX_TYPO_FREQUENCY);
 			fixer.setTypoFrequencyRatio(Index.TYPO_FREQUENCY_RATIO);
+			fixer.setCheckPhonetics(Index.CHECK_PHONETICS);
 			fixer.setDocument(document);
 			fixer.init();
 			fixer.execute();
@@ -101,7 +103,7 @@ public class TypoBusterTests {
 			assertEquals("gastronomers", string);
 			correction = gastronomers.getFeatures().get("correction");
 			assertNotNull(correction);
-			assertEquals("astronomers", correction);
+			assertNotEquals("astronomers", correction); // if phonetic check is on
 
 			// clean up
 			modelFile.delete();
