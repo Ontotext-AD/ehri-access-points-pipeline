@@ -41,8 +41,7 @@ public class TypoBuster {
             time = System.currentTimeMillis() - start;
             System.out.println(" " + time + " ms");
 
-            // TODO: allow the user to override defaults
-            System.out.print("Building index...");
+            System.out.print("Building index with defaults...");
             start = System.currentTimeMillis();
             index = new Index(model);
             time = System.currentTimeMillis() - start;

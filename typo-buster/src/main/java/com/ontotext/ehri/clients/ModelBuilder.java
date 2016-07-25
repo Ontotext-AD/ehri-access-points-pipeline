@@ -74,7 +74,7 @@ public class ModelBuilder {
             start = System.currentTimeMillis();
 
             try {
-                Models.dumpModel(model, new File(args[2]));
+                Serialization.dump(model, new File(args[2]));
             } catch (IOException e) {
                 e.printStackTrace();
             }

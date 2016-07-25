@@ -2,7 +2,10 @@ package com.ontotext.ehri.tools;
 
 import com.ontotext.ehri.tybus.Model;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Models {
 
@@ -16,11 +19,5 @@ public class Models {
         }
 
         reader.close();
-    }
-
-    public static void dumpModel(Model model, File dumpFile) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(dumpFile));
-        writer.write(model.toString());
-        writer.close();
     }
 }

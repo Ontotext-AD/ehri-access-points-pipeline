@@ -6,6 +6,12 @@ import java.util.zip.GZIPOutputStream;
 
 public class Serialization {
 
+    public static void dump(Object object, File file) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        writer.write(object.toString());
+        writer.close();
+    }
+
     public static void serialize(Object object, File file) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
