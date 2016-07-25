@@ -78,7 +78,7 @@ public class IndexBuilder {
         // build index
         System.out.print("Building index...");
         start = System.currentTimeMillis();
-        Index index = new Index(model);
+        Index index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio, checkPhonetics);
         time = System.currentTimeMillis() - start;
         System.out.println(" " + time + " ms");
 
