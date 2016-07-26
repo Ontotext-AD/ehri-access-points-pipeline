@@ -64,14 +64,14 @@ public class Index implements Serializable {
     /**
      * Build a new index from a model.
      *
-     * @param model                  The model to build from.
-     * @param minLength              Minimum length of correction or typo.
-     * @param minCorrectionFrequency Minimum frequency of correction.
-     * @param maxTypoFrequency       Absolute maximum frequency of typo.
-     * @param typoFrequencyRatio     Typo-frequency to correction-frequency ratio.
-     * @param checkPhonetics         Check phonetics (or not).
+     * @param model                    The model to build from.
+     * @param minLength                Minimum length of correction or typo.
+     * @param minCorrectionFrequency   Minimum frequency of correction.
+     * @param maxTypoFrequencyAbsolute Absolute maximum frequency of typo.
+     * @param typoFrequencyRatio       Typo-frequency to correction-frequency ratio.
+     * @param checkPhonetics           Check phonetics (or not).
      */
-    public Index(Model model, int minLength, int minCorrectionFrequency, int maxTypoFrequency, float typoFrequencyRatio, boolean checkPhonetics) {
+    public Index(Model model, int minLength, int minCorrectionFrequency, int maxTypoFrequencyAbsolute, float typoFrequencyRatio, boolean checkPhonetics) {
         int maxLength = model.maxTokenLength();
         typo2correction = new HashMap<>();
 
@@ -87,14 +87,14 @@ public class Index implements Serializable {
                 if (correctionFrequency < minCorrectionFrequency) break;
 
                 // calculate the relative maximum typo frequency
-                int maxTypoFrequencyRel = Math.round(typoFrequencyRatio * correctionFrequency);
-                maxTypoFrequencyRel = Math.min(maxTypoFrequencyRel, correctionFrequency - 1);
-                maxTypoFrequencyRel = Math.min(maxTypoFrequencyRel, maxTypoFrequency);
+                int maxTypoFrequency = Math.round(typoFrequencyRatio * correctionFrequency);
+                maxTypoFrequency = Math.min(maxTypoFrequency, correctionFrequency - 1);
+                maxTypoFrequency = Math.min(maxTypoFrequency, maxTypoFrequencyAbsolute);
                 String correction = correctionToken.getContent();
 
                 // find same-length typos
                 for (Token typoToken : tokens) {
-                    if (typoToken.getNumOccurrences() > maxTypoFrequencyRel) break;
+                    if (typoToken.getNumOccurrences() > maxTypoFrequency) break;
 
                     // check for alteration or transposition
                     String typo = typoToken.getContent();
@@ -106,7 +106,7 @@ public class Index implements Serializable {
                 if (length > minLength) {
 
                     for (Token typoToken : model.getTokens(length - 1)) {
-                        if (typoToken.getNumOccurrences() > maxTypoFrequencyRel) break;
+                        if (typoToken.getNumOccurrences() > maxTypoFrequency) break;
 
                         // check for deletion
                         String typo = typoToken.getContent();
