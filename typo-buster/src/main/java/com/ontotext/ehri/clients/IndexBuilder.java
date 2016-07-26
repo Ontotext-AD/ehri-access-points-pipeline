@@ -58,7 +58,7 @@ public class IndexBuilder {
         Integer minCorrectionFrequencyInput = parseInteger(scanner.nextLine());
         if (minCorrectionFrequencyInput != null) minCorrectionFrequency = minCorrectionFrequencyInput;
 
-        int maxTypoFrequency = Index.MAX_TYPO_FREQUENCY;
+        int maxTypoFrequency = Index.MAX_TYPO_FREQUENCY_ABS;
         System.out.println("Enter absolute maximum frequency of typo or press ENTER to use default (" + maxTypoFrequency + "):");
         Integer maxTypoFrequencyInput = parseInteger(scanner.nextLine());
         if (maxTypoFrequencyInput != null) maxTypoFrequency = maxTypoFrequencyInput;

@@ -33,7 +33,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
     Integer numCorrections;
     Integer minLength;
     Integer minCorrectionFrequency;
-    Integer maxTypoFrequency;
+    Integer maxTypoFrequencyAbs;
     Float typoFrequencyRatio;
     Boolean checkPhonetics;
 
@@ -105,13 +105,13 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         this.minCorrectionFrequency = minCorrectionFrequency;
     }
 
-    public Integer getMaxTypoFrequency() {
-        return maxTypoFrequency;
+    public Integer getMaxTypoFrequencyAbs() {
+        return maxTypoFrequencyAbs;
     }
 
-    @CreoleParameter(defaultValue = "" + Index.MAX_TYPO_FREQUENCY, comment = "Absolute maximum frequency of typo.")
-    public void setMaxTypoFrequency(Integer maxTypoFrequency) {
-        this.maxTypoFrequency = maxTypoFrequency;
+    @CreoleParameter(defaultValue = "" + Index.MAX_TYPO_FREQUENCY_ABS, comment = "Absolute maximum frequency of typo.")
+    public void setMaxTypoFrequencyAbs(Integer maxTypoFrequencyAbs) {
+        this.maxTypoFrequencyAbs = maxTypoFrequencyAbs;
     }
 
     public Float getTypoFrequencyRatio() {
@@ -143,7 +143,7 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
 
             System.out.println("building index from model");
             long start = System.currentTimeMillis();
-            index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio, checkPhonetics);
+            index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequencyAbs, typoFrequencyRatio, checkPhonetics);
             long time = System.currentTimeMillis() - start;
             System.out.println("index built in " + time + " ms");
             System.out.println("number of corrections in index: " + index.numCorrections());

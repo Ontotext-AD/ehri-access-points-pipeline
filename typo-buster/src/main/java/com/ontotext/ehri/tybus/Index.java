@@ -42,7 +42,7 @@ public class Index implements Serializable {
     public static final int MIN_CORRECTION_FREQUENCY = 10;
 
     // absolute maximum frequency of typo
-    public static final int MAX_TYPO_FREQUENCY = 10;
+    public static final int MAX_TYPO_FREQUENCY_ABS = 10;
 
     // typo-frequency to correction-frequency ratio
     public static final float TYPO_FREQUENCY_RATIO = 0.1f;
@@ -58,7 +58,7 @@ public class Index implements Serializable {
      * @param model The model to build from.
      */
     public Index(Model model) {
-        this(model, MIN_LENGTH, MIN_CORRECTION_FREQUENCY, MAX_TYPO_FREQUENCY, TYPO_FREQUENCY_RATIO, CHECK_PHONETICS);
+        this(model, MIN_LENGTH, MIN_CORRECTION_FREQUENCY, MAX_TYPO_FREQUENCY_ABS, TYPO_FREQUENCY_RATIO, CHECK_PHONETICS);
     }
 
     /**

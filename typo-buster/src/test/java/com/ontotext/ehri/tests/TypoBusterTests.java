@@ -70,7 +70,7 @@ public class TypoBusterTests {
 			fixer.setNumCorrections(Index.DEFAULT_NUM_CORRECTIONS);
 			fixer.setMinLength(Index.MIN_LENGTH);
 			fixer.setMinCorrectionFrequency(Index.MIN_CORRECTION_FREQUENCY);
-			fixer.setMaxTypoFrequency(Index.MAX_TYPO_FREQUENCY);
+			fixer.setMaxTypoFrequencyAbs(Index.MAX_TYPO_FREQUENCY_ABS);
 			fixer.setTypoFrequencyRatio(Index.TYPO_FREQUENCY_RATIO);
 			fixer.setCheckPhonetics(Index.CHECK_PHONETICS);
 			fixer.setDocument(document);
