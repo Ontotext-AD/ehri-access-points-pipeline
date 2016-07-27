@@ -80,6 +80,7 @@ public class Location implements Comparable<Location> {
         if (population > other.population) return -1;
         if (population < other.population) return +1;
 
+        // comply with the definition of equality
         return Integer.compare(id, other.id);
     }
 }

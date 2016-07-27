@@ -30,12 +30,20 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
 
     private static final Set<String> REQUIRED_CANDIDATE_FEATURES = new HashSet<String>();
     static {
-        Collections.addAll(REQUIRED_CANDIDATE_FEATURES, "inst", "class", "ancestors", "latitude", "longitude");
+        Collections.addAll(REQUIRED_CANDIDATE_FEATURES,
+                ID_FEATURE_NAME,
+                TYPE_FEATURE_NAME,
+                ANCESTORS_FEATURE_NAME,
+                LATITUDE_FEATURE_NAME,
+                LONGITUDE_FEATURE_NAME
+        );
     }
 
     private String annotationSetName;
     private String contextAnnotationType;
     private String candidateAnnotationType;
+
+    private Boolean keepAncestors;
 
     public String getAnnotationSetName() {
         return annotationSetName;
@@ -68,6 +76,16 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
         this.candidateAnnotationType = candidateAnnotationType;
     }
 
+    public Boolean getKeepAncestors() {
+        return keepAncestors;
+    }
+
+    @RunTime
+    @CreoleParameter(defaultValue = "false", comment = "Keep disambiguating ancestors or not.")
+    public void setKeepAncestors(Boolean keepAncestors) {
+        this.keepAncestors = keepAncestors;
+    }
+
     @Override
     public void execute() throws ExecutionException {
         AnnotationSet annotationSet = document.getAnnotations(annotationSetName);
@@ -88,13 +106,13 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                 AnnotationSet candidatesInLookup = candidatesInContext.get(lookup.getStartNode().getOffset(), lookup.getEndNode().getOffset());
                 for (Annotation candidate : candidatesInLookup) {
                     FeatureMap candidateFeatures = candidate.getFeatures();
-                    Object instFeature = candidateFeatures.get("inst");
-                    Object classFeature = candidateFeatures.get("class");
-                    Object ancestorsFeature = candidateFeatures.get("ancestors");
-                    Object latitudeFeature = candidateFeatures.get("latitude");
-                    Object longitudeFeature = candidateFeatures.get("longitude");
-                    Object populationFeature = candidateFeatures.get("population");
-                    Object wikipediaLinksFeature = candidateFeatures.get("wikipediaLinks");
+                    Object instFeature = candidateFeatures.get(ID_FEATURE_NAME);
+                    Object classFeature = candidateFeatures.get(TYPE_FEATURE_NAME);
+                    Object ancestorsFeature = candidateFeatures.get(ANCESTORS_FEATURE_NAME);
+                    Object latitudeFeature = candidateFeatures.get(LATITUDE_FEATURE_NAME);
+                    Object longitudeFeature = candidateFeatures.get(LONGITUDE_FEATURE_NAME);
+                    Object populationFeature = candidateFeatures.get(POPULATION_FEATURE_NAME);
+                    Object wikipediaLinksFeature = candidateFeatures.get(LINKS_FEATURE_NAME);
 
                     // should not happen according to GATE documentation
                     if (instFeature == null || classFeature == null || ancestorsFeature == null || latitudeFeature == null || longitudeFeature == null) {
@@ -137,11 +155,8 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                 lookups.add(candidates);
             }
 
-            // if there are lookups, disambiguate the candidate locations in them
-            if (lookups.isEmpty()) continue;
-            SortedSet<Location> locations = Disambiguator.disambiguate(lookups);
-
             // collect the instances to keep
+            SortedSet<Location> locations = Disambiguator.disambiguate(lookups, keepAncestors);
             Set<String> instancesToKeep = new HashSet<String>();
             for (Location location : locations) {
                 instancesToKeep.add(GEONAMES_ID_PREFIX + location.getId() + GEONAMES_ID_SUFFIX);
@@ -149,7 +164,7 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
 
             // remove other instances
             for (Annotation candidate : candidatesInContext) {
-                String instance = (String) candidate.getFeatures().get("inst");
+                String instance = (String) candidate.getFeatures().get(ID_FEATURE_NAME);
                 if (instance == null || !instancesToKeep.contains(instance)) annotationSet.remove(candidate);
             }
         }
