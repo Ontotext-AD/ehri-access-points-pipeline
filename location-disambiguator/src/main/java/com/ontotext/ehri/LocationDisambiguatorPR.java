@@ -73,6 +73,7 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
         AnnotationSet annotationSet = document.getAnnotations(annotationSetName);
         AnnotationSet candidateAnnotationSet = annotationSet.get(candidateAnnotationType, REQUIRED_CANDIDATE_FEATURES);
 
+        // disambiguate each context separately
         for (Annotation context : annotationSet.get(contextAnnotationType)) {
             Set<SortedSet<Location>> lookups = new HashSet<SortedSet<Location>>();
 
@@ -86,49 +87,71 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                 SortedSet<Location> candidates = new TreeSet<Location>();
                 AnnotationSet candidatesInLookup = candidatesInContext.get(lookup.getStartNode().getOffset(), lookup.getEndNode().getOffset());
                 for (Annotation candidate : candidatesInLookup) {
-                    FeatureMap features = candidate.getFeatures();
-                    Object instFeature = features.get("inst");
-                    Object classFeature = features.get("class");
-                    Object ancestorsFeature = features.get("ancestors");
-                    Object latitudeFeature = features.get("latitude");
-                    Object longitudeFeature = features.get("longitude");
-                    Object populationFeature = features.get("population");
-                    Object wikipediaLinksFeature = features.get("wikipediaLinks");
+                    FeatureMap candidateFeatures = candidate.getFeatures();
+                    Object instFeature = candidateFeatures.get("inst");
+                    Object classFeature = candidateFeatures.get("class");
+                    Object ancestorsFeature = candidateFeatures.get("ancestors");
+                    Object latitudeFeature = candidateFeatures.get("latitude");
+                    Object longitudeFeature = candidateFeatures.get("longitude");
+                    Object populationFeature = candidateFeatures.get("population");
+                    Object wikipediaLinksFeature = candidateFeatures.get("wikipediaLinks");
 
                     // should not happen according to GATE documentation
                     if (instFeature == null || classFeature == null || ancestorsFeature == null || latitudeFeature == null || longitudeFeature == null) {
                         throw new ExecutionException("GATE sucks");
                     }
 
+                    // parse ID from instance
                     String url = (String) instFeature;
                     int id = Integer.parseInt(url.substring(GEONAMES_ID_PREFIX.length(), url.length() - GEONAMES_ID_SUFFIX.length()));
 
+                    // parse type from class
                     String type = (String) classFeature;
                     type = type.substring(GEONAMES_TYPE_PREFIX.length());
 
+                    // parse latitude and longitude
                     double latitude = Double.parseDouble((String) ((Collection) latitudeFeature).iterator().next());
                     double longitude = Double.parseDouble((String) ((Collection) longitudeFeature).iterator().next());
 
+                    // parse population if present
                     int population = 0;
                     if (populationFeature != null) population = Integer.parseInt((String) ((Collection) populationFeature).iterator().next());
 
+                    // parse the number of links if present
                     int numLinks = 0;
                     if (wikipediaLinksFeature != null) numLinks = ((Collection) wikipediaLinksFeature).size();
 
+                    // parse the ancestor IDs
                     Set<Integer> ancestors = new HashSet<Integer>();
                     for (Object ancestorsFeatureItem : (Collection) ancestorsFeature) {
                         String ancestor = (String) ancestorsFeatureItem;
                         ancestors.add(Integer.valueOf(ancestor.substring(GEONAMES_ID_PREFIX.length(), ancestor.length() - GEONAMES_ID_SUFFIX.length())));
                     }
 
+                    // add location to the set of candidates
                     candidates.add(new Location(id, type, latitude, longitude, population, numLinks, ancestors));
                     addedAnnotationIDs.add(candidate.getId());
                 }
 
+                // add the set of candidates to the set of lookups
                 lookups.add(candidates);
             }
 
+            // if there are lookups, disambiguate the candidate locations in them
+            if (lookups.isEmpty()) continue;
             SortedSet<Location> locations = Disambiguator.disambiguate(lookups);
+
+            // collect the instances to keep
+            Set<String> instancesToKeep = new HashSet<String>();
+            for (Location location : locations) {
+                instancesToKeep.add(GEONAMES_ID_PREFIX + location.getId() + GEONAMES_ID_SUFFIX);
+            }
+
+            // remove other instances
+            for (Annotation candidate : candidatesInContext) {
+                String instance = (String) candidate.getFeatures().get("inst");
+                if (instance == null || !instancesToKeep.contains(instance)) annotationSet.remove(candidate);
+            }
         }
     }
 }
