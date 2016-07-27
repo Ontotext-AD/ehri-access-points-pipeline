@@ -4,6 +4,13 @@ import java.util.*;
 
 public class Disambiguator {
 
+    /**
+     * Disambiguate a set of lookups, each containing a set of candidate locations,
+     * using ancestor-descendant relations between candidates in lookups and popularity measure as fallback.
+     * @param lookups Set of lookups (matched parts of text).
+     * @param keepAncestors Keep disambiguating ancestors or not.
+     * @return Set of locations.
+     */
     public static SortedSet<Location> disambiguate(Set<SortedSet<Location>> lookups, boolean keepAncestors) {
         SortedSet<Location> result = new TreeSet<Location>();
         if (lookups.isEmpty()) return result;
@@ -12,10 +19,12 @@ public class Disambiguator {
         Map<Location, Set<Location>> candidate2ancestors = new HashMap<Location, Set<Location>>();
         int maxNumAncestors = 0;
 
+        // for each lookup and candidate within
         for (SortedSet<Location> lookup : lookups) {
             for (Location candidate : lookup) {
                 Set<Location> ancestors = new HashSet<Location>();
 
+                // for each other lookup and candidate within
                 for (SortedSet<Location> otherLookup : lookups) {
                     if (otherLookup == lookup) continue;
                     for (Location otherCandidate : otherLookup) {

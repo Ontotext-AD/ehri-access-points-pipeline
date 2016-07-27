@@ -167,6 +167,32 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                 String instance = (String) candidate.getFeatures().get(ID_FEATURE_NAME);
                 if (instance == null || !instancesToKeep.contains(instance)) annotationSet.remove(candidate);
             }
+
+            // add the coordinates of the center as features of the context annotation, because we can
+            double[] centerCoordinates = calculateCenterCoordinates(locations);
+            context.getFeatures().put(LATITUDE_FEATURE_NAME, centerCoordinates[0]);
+            context.getFeatures().put(LONGITUDE_FEATURE_NAME, centerCoordinates[1]);
         }
+    }
+
+    /**
+     * Calculate the center coordinates of some locations.
+     * @param locations Set of locations.
+     * @return Array containing the coordinates of the center: latitude and longitude.
+     */
+    private static double[] calculateCenterCoordinates(Set<Location> locations) {
+        double sumLatitudes = 0;
+        double sumLongitudes = 0;
+
+        // sum up the coordinates of locations
+        for (Location location : locations) {
+            sumLatitudes += location.getLatitude();
+            sumLongitudes += location.getLongitude();
+        }
+
+        // calculate the average coordinates
+        double centerLatitude = sumLatitudes / (double) locations.size();
+        double centerLongitude = sumLongitudes / (double) locations.size();
+        return new double[] { centerLatitude, centerLongitude };
     }
 }
