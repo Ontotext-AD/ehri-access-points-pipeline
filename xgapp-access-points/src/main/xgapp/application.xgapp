@@ -407,6 +407,67 @@
                     </features>
                   </pr>
                 </gate.util.persistence.AnalyserRunningStrategyPersistence>
+                <gate.util.persistence.AnalyserRunningStrategyPersistence>
+                  <runMode>1</runMode>
+                  <featureName></featureName>
+                  <featureValue></featureValue>
+                  <pr class="gate.util.persistence.LanguageAnalyserPersistence">
+                    <runtimeParams class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap>
+                        <entry>
+                          <string>annotationSetName</string>
+                          <null/>
+                        </entry>
+                        <entry>
+                          <string>corpus</string>
+                          <null/>
+                        </entry>
+                        <entry>
+                          <string>longestMatchOnly</string>
+                          <boolean>true</boolean>
+                        </entry>
+                        <entry>
+                          <string>wholeWordsOnly</string>
+                          <boolean>true</boolean>
+                        </entry>
+                        <entry>
+                          <string>document</string>
+                          <null/>
+                        </entry>
+                      </localMap>
+                    </runtimeParams>
+                    <resourceType>gate.creole.gazetteer.DefaultGazetteer</resourceType>
+                    <resourceName>First-Name Gazetteer</resourceName>
+                    <initParams class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap>
+                        <entry>
+                          <string>gazetteerFeatureSeparator</string>
+                          <string>:</string>
+                        </entry>
+                        <entry>
+                          <string>listsURL</string>
+                          <gate.util.persistence.PersistenceManager-URLHolder>
+                            <urlString>$relpath$application-resources/gazetteer/names-first.def</urlString>
+                          </gate.util.persistence.PersistenceManager-URLHolder>
+                        </entry>
+                        <entry>
+                          <string>encoding</string>
+                          <string>UTF-8</string>
+                        </entry>
+                        <entry>
+                          <string>caseSensitive</string>
+                          <boolean>false</boolean>
+                        </entry>
+                      </localMap>
+                    </initParams>
+                    <features class="gate.util.persistence.MapPersistence">
+                      <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                      <localMap/>
+                    </features>
+                  </pr>
+                </gate.util.persistence.AnalyserRunningStrategyPersistence>
               </localList>
               <collectionType>java.util.ArrayList</collectionType>
             </strategiesList>
@@ -414,6 +475,7 @@
               <localList>
                 <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr"/>
                 <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr"/>
+                <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[3]/pr"/>
               </localList>
               <collectionType>java.util.ArrayList</collectionType>
             </prList>
