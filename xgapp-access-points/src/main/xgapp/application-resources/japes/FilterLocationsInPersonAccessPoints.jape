@@ -1,0 +1,33 @@
+Phase: FilterLocationsInPersonAccessPoints
+Input: Lookup
+Options: control = once
+
+Rule: FilterLocationsInPersonAccessPoints
+({Lookup})
+-->
+{
+	try {
+		AnnotationSet accessPoints = inputAS.get("Access Point");
+
+		Set<String> locationFeatures = new HashSet<String>();
+		locationFeatures.add("inst");
+		AnnotationSet locations = inputAS.get("Lookup", locationFeatures);
+
+		FeatureMap nameFeatures = new SimpleFeatureMapImpl();
+		nameFeatures.put("majorType", "name");
+		AnnotationSet names = inputAS.get("Lookup", nameFeatures);
+
+		for (Annotation accessPoint : accessPoints) {
+			AnnotationSet namesInAccessPoint = names.get(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset());
+			if (namesInAccessPoint.isEmpty()) continue;
+
+			AnnotationSet locationsInAccessPoint = locations.get(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset());
+			outputAS.removeAll(locationsInAccessPoint);
+		}
+
+		outputAS.removeAll(names);
+
+	} catch (Exception e) {
+		throw new NonFatalJapeException(e);
+	}
+}
