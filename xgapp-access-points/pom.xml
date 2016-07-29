@@ -98,6 +98,14 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/plugins</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.ontotext.ehri</groupId>
+                                    <artifactId>location-disambiguator</artifactId>
+                                    <version>${location-disambiguator.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/plugins</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>

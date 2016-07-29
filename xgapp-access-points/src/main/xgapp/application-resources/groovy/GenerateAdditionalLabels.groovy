@@ -1,7 +1,7 @@
 import java.util.regex.Pattern
 
 public class GenerateAdditionalLabels {
-	private static final Pattern STUFF_TO_REMOVE = Pattern.compile("^(bezirk|kreis|kz) |( (concentration camp)|(ska(ya)?)? oblast)$")
+	private static final Pattern STUFF_TO_REMOVE = Pattern.compile("^(bezirk|kreis|kz) |( (concentration camp)|(ska(ya)?)? oblast)\$")
 
 	public static Set<String> workFlow(String funk, String input, String clazz) {
 		Set<String> result = new HashSet<String>()

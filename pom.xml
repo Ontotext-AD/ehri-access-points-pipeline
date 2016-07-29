@@ -28,6 +28,7 @@
         <gazetteer.version>5.0.0</gazetteer.version>
         <access-point-atomizer.version>0.0.1</access-point-atomizer.version>
         <typo-buster.version>0.0.2</typo-buster.version>
+        <location-disambiguator.version>0.0.1</location-disambiguator.version>
         <junit.version>4.10</junit.version>
         <surefire.version>2.19.1</surefire.version>
         <commons-acceptance-tests.version>1.2.1</commons-acceptance-tests.version>

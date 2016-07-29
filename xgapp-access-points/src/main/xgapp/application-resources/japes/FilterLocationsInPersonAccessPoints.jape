@@ -8,15 +8,9 @@ Rule: FilterLocationsInPersonAccessPoints
 {
 	try {
 		AnnotationSet accessPoints = inputAS.get("Access Point");
-
-		Set<String> locationFeatures = new HashSet<String>();
-		locationFeatures.add("inst");
-		AnnotationSet locations = inputAS.get("Lookup", locationFeatures);
-
-		FeatureMap nameFeatures = new SimpleFeatureMapImpl();
-		nameFeatures.put("majorType", "name");
-		AnnotationSet names = inputAS.get("Lookup", nameFeatures);
-
+		AnnotationSet locations = inputAS.get("Location");
+		AnnotationSet names = inputAS.get("Lookup");
+		
 		for (Annotation accessPoint : accessPoints) {
 			AnnotationSet namesInAccessPoint = names.get(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset());
 			if (namesInAccessPoint.isEmpty()) continue;
