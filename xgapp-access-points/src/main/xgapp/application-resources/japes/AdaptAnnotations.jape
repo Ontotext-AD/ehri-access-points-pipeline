@@ -1,0 +1,23 @@
+Phase: AdaptAnnotations
+Input: Atom Token
+Options: control = once
+
+Rule: AdaptAnnotations
+({Atom})
+-->
+{
+	try {
+		outputAS.removeAll(inputAS.get("Token"));
+		for (Annotation atom : inputAS.get("Atom")) {
+			Object fingerprint = atom.getFeatures().get("fingerprint");
+			if (fingerprint == null) continue;
+
+			FeatureMap features = new SimpleFeatureMapImpl();
+			features.put("correction", fingerprint);
+			outputAS.add(atom.getStartNode(), atom.getEndNode(), "Token", features);
+		}
+
+	} catch (Exception e) {
+		throw new NonFatalJapeException(e);
+	}
+}
