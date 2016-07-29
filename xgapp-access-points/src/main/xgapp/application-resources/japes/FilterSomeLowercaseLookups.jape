@@ -1,0 +1,26 @@
+Phase: FilterSomeLowercaseLookups
+Input: Access Point Lookup
+Options: control = once
+
+Rule: FilterSomeLowercaseLookups
+({Lookup})
+-->
+{
+	try {
+		AnnotationSet accessPoints = inputAS.get("Access Point");
+		AnnotationSet lookups = inputAS.get("Lookup");
+		
+		for (Annotation accessPoint : accessPoints) {
+			String accessPointText = doc.getContent().getContent(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset()).toString();
+			if (accessPointText.equals(accessPointText.toLowerCase())) continue;
+
+			for (Annotation lookup : lookups.get(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset())) {
+				String lookupText = doc.getContent().getContent(lookup.getStartNode().getOffset(), lookup.getEndNode().getOffset()).toString();
+				if (lookupText.equals(lookupText.toLowerCase())) outputAS.remove(lookup);
+			}
+		}
+
+	} catch (Exception e) {
+		throw new NonFatalJapeException(e);
+	}
+}

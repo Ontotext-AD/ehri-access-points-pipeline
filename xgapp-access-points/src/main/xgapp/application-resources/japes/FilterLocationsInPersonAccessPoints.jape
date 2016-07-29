@@ -1,5 +1,5 @@
 Phase: FilterLocationsInPersonAccessPoints
-Input: Lookup
+Input: Access Point Location Lookup
 Options: control = once
 
 Rule: FilterLocationsInPersonAccessPoints
