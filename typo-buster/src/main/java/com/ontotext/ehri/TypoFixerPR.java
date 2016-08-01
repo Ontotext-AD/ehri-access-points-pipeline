@@ -1,5 +1,6 @@
 package com.ontotext.ehri;
 
+import com.ontotext.ehri.tools.Serialization;
 import com.ontotext.ehri.tybus.Index;
 import com.ontotext.ehri.tybus.Model;
 import gate.Annotation;
@@ -32,8 +33,9 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
     Integer numCorrections;
     Integer minLength;
     Integer minCorrectionFrequency;
-    Integer maxTypoFrequency;
+    Integer maxTypoFrequencyAbs;
     Float typoFrequencyRatio;
+    Boolean checkPhonetics;
 
     public String getAnnotationSet() {
         return annotationSet;
@@ -103,13 +105,13 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         this.minCorrectionFrequency = minCorrectionFrequency;
     }
 
-    public Integer getMaxTypoFrequency() {
-        return maxTypoFrequency;
+    public Integer getMaxTypoFrequencyAbs() {
+        return maxTypoFrequencyAbs;
     }
 
-    @CreoleParameter(defaultValue = "" + Index.MAX_TYPO_FREQUENCY, comment = "Absolute maximum frequency of typo.")
-    public void setMaxTypoFrequency(Integer maxTypoFrequency) {
-        this.maxTypoFrequency = maxTypoFrequency;
+    @CreoleParameter(defaultValue = "" + Index.MAX_TYPO_FREQUENCY_ABS, comment = "Absolute maximum frequency of typo.")
+    public void setMaxTypoFrequencyAbs(Integer maxTypoFrequencyAbs) {
+        this.maxTypoFrequencyAbs = maxTypoFrequencyAbs;
     }
 
     public Float getTypoFrequencyRatio() {
@@ -121,6 +123,15 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
         this.typoFrequencyRatio = typoFrequencyRatio;
     }
 
+    public Boolean getCheckPhonetics() {
+        return checkPhonetics;
+    }
+
+    @CreoleParameter(defaultValue = "" + Index.CHECK_PHONETICS, comment = "Toggle phonetic check.")
+    public void setCheckPhonetics(Boolean checkPhonetics) {
+        this.checkPhonetics = checkPhonetics;
+    }
+
     @Override
     public Resource init() throws ResourceInstantiationException {
 
@@ -128,11 +139,11 @@ public class TypoFixerPR extends AbstractLanguageAnalyser {
             File modelFile = new File(modelFilePath.toURI());
 
             System.out.println("deserializing model from file: " + modelFile.getAbsolutePath());
-            Model model = Model.deserialize(modelFile);
+            Model model = (Model) Serialization.deserialize(modelFile);
 
             System.out.println("building index from model");
             long start = System.currentTimeMillis();
-            index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio);
+            index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequencyAbs, typoFrequencyRatio, checkPhonetics);
             long time = System.currentTimeMillis() - start;
             System.out.println("index built in " + time + " ms");
             System.out.println("number of corrections in index: " + index.numCorrections());

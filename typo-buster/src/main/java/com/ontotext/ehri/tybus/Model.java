@@ -1,9 +1,7 @@
 package com.ontotext.ehri.tybus;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * A model stores tokens extracted from texts.
@@ -82,21 +80,5 @@ public class Model implements Serializable {
         }
 
         return stringBuilder.toString();
-    }
-
-    public static void serialize(Model model, File file) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(gzipOutputStream);
-        objectOutputStream.writeObject(model);
-        objectOutputStream.close();
-    }
-
-    public static Model deserialize(File file) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        GZIPInputStream gzipInputStream = new GZIPInputStream(fileInputStream);
-        ObjectInputStream objectInputStream = new ObjectInputStream(gzipInputStream);
-        Model model = (Model) objectInputStream.readObject();
-        return model;
     }
 }
