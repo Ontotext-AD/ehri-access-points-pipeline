@@ -12,14 +12,8 @@ public class TypoBuster {
     public static void main(String[] args) {
 
         // print usage
-        if (args.length == 0) {
+        if (args.length < 2 || args.length > 3) {
             System.out.println("USAGE: java " + TypoBuster.class.getName() + " <input file> <output file> [<index file>]");
-            System.exit(1);
-        }
-
-        // check arguments
-        if (args.length < 2) {
-            System.err.println("Not enough arguments!");
             System.exit(1);
         }
 
