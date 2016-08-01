@@ -40,39 +40,12 @@ public class IndexBuilder {
         }
 
         // prompt user for index parameters
-        Scanner scanner = new Scanner(System.in);
-
-        int minLength = Index.MIN_LENGTH;
-        System.out.println("Enter minimum length of correction or typo or press ENTER to use default (" + minLength + "):");
-        Integer minLengthInput = parseInteger(scanner.nextLine());
-        if (minLengthInput != null) minLength = minLengthInput;
-
-        int minCorrectionFrequency = Index.MIN_CORRECTION_FREQUENCY;
-        System.out.println("Enter minimum frequency of correction or press ENTER to use default (" + minCorrectionFrequency + "):");
-        Integer minCorrectionFrequencyInput = parseInteger(scanner.nextLine());
-        if (minCorrectionFrequencyInput != null) minCorrectionFrequency = minCorrectionFrequencyInput;
-
-        int maxTypoFrequency = Index.MAX_TYPO_FREQUENCY_ABS;
-        System.out.println("Enter absolute maximum frequency of typo or press ENTER to use default (" + maxTypoFrequency + "):");
-        Integer maxTypoFrequencyInput = parseInteger(scanner.nextLine());
-        if (maxTypoFrequencyInput != null) maxTypoFrequency = maxTypoFrequencyInput;
-
-        float typoFrequencyRatio = Index.TYPO_FREQUENCY_RATIO;
-        System.out.println("Enter typo-frequency to correction-frequency ratio or press ENTER to use default (" + typoFrequencyRatio + "):");
-        Float typoFrequencyRatioInput = parseFloat(scanner.nextLine());
-        if (typoFrequencyRatioInput != null) typoFrequencyRatio = typoFrequencyRatioInput;
-
-        boolean checkPhonetics = Index.CHECK_PHONETICS;
-        System.out.println("Enter toggle phonetic check or press ENTER to use default (" + checkPhonetics + "):");
-        Boolean checkPhoneticsInput = parseBoolean(scanner.nextLine());
-        if (checkPhoneticsInput != null) checkPhonetics = checkPhoneticsInput;
-
-        scanner.close();
+        Object[] params = bugUser();
 
         // build index
         System.out.print("Building index...");
         start = System.currentTimeMillis();
-        Index index = new Index(model, minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio, checkPhonetics);
+        Index index = new Index(model, (int) params[0], (int) params[1], (int) params[2], (float) params[3], (boolean) params[4]);
         time = System.currentTimeMillis() - start;
         System.out.println(" " + time + " ms");
 
@@ -103,6 +76,42 @@ public class IndexBuilder {
 
         time = System.currentTimeMillis() - start;
         System.out.println(" " + time + " ms");
+    }
+
+    /**
+     * Prompt user for index parameters.
+     * @return An array containing the index parameters in order.
+     */
+    private static Object[] bugUser() {
+        Scanner scanner = new Scanner(System.in);
+
+        int minLength = Index.MIN_LENGTH;
+        System.out.println("Enter minimum length of correction or typo or press ENTER to use default (" + minLength + "):");
+        Integer minLengthInput = parseInteger(scanner.nextLine());
+        if (minLengthInput != null) minLength = minLengthInput;
+
+        int minCorrectionFrequency = Index.MIN_CORRECTION_FREQUENCY;
+        System.out.println("Enter minimum frequency of correction or press ENTER to use default (" + minCorrectionFrequency + "):");
+        Integer minCorrectionFrequencyInput = parseInteger(scanner.nextLine());
+        if (minCorrectionFrequencyInput != null) minCorrectionFrequency = minCorrectionFrequencyInput;
+
+        int maxTypoFrequency = Index.MAX_TYPO_FREQUENCY_ABS;
+        System.out.println("Enter absolute maximum frequency of typo or press ENTER to use default (" + maxTypoFrequency + "):");
+        Integer maxTypoFrequencyInput = parseInteger(scanner.nextLine());
+        if (maxTypoFrequencyInput != null) maxTypoFrequency = maxTypoFrequencyInput;
+
+        float typoFrequencyRatio = Index.TYPO_FREQUENCY_RATIO;
+        System.out.println("Enter typo-frequency to correction-frequency ratio or press ENTER to use default (" + typoFrequencyRatio + "):");
+        Float typoFrequencyRatioInput = parseFloat(scanner.nextLine());
+        if (typoFrequencyRatioInput != null) typoFrequencyRatio = typoFrequencyRatioInput;
+
+        boolean checkPhonetics = Index.CHECK_PHONETICS;
+        System.out.println("Enter toggle phonetic check or press ENTER to use default (" + checkPhonetics + "):");
+        Boolean checkPhoneticsInput = parseBoolean(scanner.nextLine());
+        if (checkPhoneticsInput != null) checkPhonetics = checkPhoneticsInput;
+
+        scanner.close();
+        return new Object[] { minLength, minCorrectionFrequency, maxTypoFrequency, typoFrequencyRatio, checkPhonetics };
     }
 
     private static Integer parseInteger(String string) {
