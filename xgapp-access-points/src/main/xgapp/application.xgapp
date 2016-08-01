@@ -312,7 +312,7 @@
               <localMap>
                 <entry>
                   <string>inputAsName</string>
-                  <string>tmp</string>
+                  <string></string>
                 </entry>
                 <entry>
                   <string>cacheLR</string>
