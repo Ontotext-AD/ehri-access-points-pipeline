@@ -1,5 +1,6 @@
 package com.ontotext.ehri;
 
+import com.ontotext.ehri.tools.Serialization;
 import com.ontotext.ehri.tybus.Model;
 import gate.Annotation;
 import gate.creole.AbstractLanguageAnalyser;
@@ -71,7 +72,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
 
             if (modelFile.isFile()) {
                 System.out.println("deserializing model from file: " + modelFile.getAbsolutePath());
-                model = Model.deserialize(modelFile);
+                model = (Model) Serialization.deserialize(modelFile);
             } else {
                 System.out.println("initializing new model");
                 model = new Model();
@@ -87,7 +88,7 @@ public class TypoLearnerPR extends AbstractLanguageAnalyser {
 
             System.out.println("number of distinct tokens in model: " + model.numDistinctTokens());
             System.out.println("serializing model to file: " + modelFile.getAbsolutePath());
-            Model.serialize(model, modelFile);
+            Serialization.serialize(model, modelFile);
             System.out.println("serialization finished");
 
         } catch (URISyntaxException | IOException | ClassNotFoundException e) {

@@ -3,6 +3,7 @@ package com.ontotext.ehri.tests;
 import com.ontotext.acceptance.ClasspathUtils;
 import com.ontotext.ehri.TypoFixerPR;
 import com.ontotext.ehri.TypoLearnerPR;
+import com.ontotext.ehri.tools.Serialization;
 import com.ontotext.ehri.tybus.Index;
 import com.ontotext.ehri.tybus.Model;
 import gate.Annotation;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class TypoBusterTests {
@@ -53,7 +55,7 @@ public class TypoBusterTests {
 			learner.execute();
 
 			// check model
-			Model model = Model.deserialize(modelFile);
+			Model model = (Model) Serialization.deserialize(modelFile);
 			assertNotNull(model);
 			assertEquals("unexpected number of distinct tokens", 893, model.numDistinctTokens());
 			assertEquals("unexpected maximum token length", 19, model.maxTokenLength());
@@ -68,8 +70,9 @@ public class TypoBusterTests {
 			fixer.setNumCorrections(Index.DEFAULT_NUM_CORRECTIONS);
 			fixer.setMinLength(Index.MIN_LENGTH);
 			fixer.setMinCorrectionFrequency(Index.MIN_CORRECTION_FREQUENCY);
-			fixer.setMaxTypoFrequency(Index.MAX_TYPO_FREQUENCY);
+			fixer.setMaxTypoFrequencyAbs(Index.MAX_TYPO_FREQUENCY_ABS);
 			fixer.setTypoFrequencyRatio(Index.TYPO_FREQUENCY_RATIO);
+			fixer.setCheckPhonetics(Index.CHECK_PHONETICS);
 			fixer.setDocument(document);
 			fixer.init();
 			fixer.execute();
@@ -100,7 +103,7 @@ public class TypoBusterTests {
 			assertEquals("gastronomers", string);
 			correction = gastronomers.getFeatures().get("correction");
 			assertNotNull(correction);
-			assertEquals("astronomers", correction);
+			assertNotEquals("astronomers", correction); // if phonetic check is on
 
 			// clean up
 			modelFile.delete();
