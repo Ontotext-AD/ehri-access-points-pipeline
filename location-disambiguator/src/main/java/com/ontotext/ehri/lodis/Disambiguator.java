@@ -43,6 +43,9 @@ public class Disambiguator {
             }
         }
 
+        // apparently it can happen
+        if (candidate2ancestors.isEmpty()) return result;
+
         // collect the maximal candidates and sort them by popularity
         SortedSet<Location> maxCandidates = new TreeSet<Location>();
         for (Location candidate : candidate2ancestors.keySet()) {
