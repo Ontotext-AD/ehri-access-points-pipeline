@@ -5,20 +5,21 @@ SELECT ?concept ?type ?literal WHERE {
     ?concept rdf:type geo:Feature.
     ?concept geo:featureCode ?type.
     ?concept geo:featureClass ?class.
-    ?concept geo:countryCode ?country.
 
     # get all names
     ?concept geo:name | geo:officialName | geo:alternateName ?literal.
 
     # allow only specific classes and codes globally
     FILTER(?class = geo:A || ?class = geo:P
-        || ?type = geo:L.AREA || ?type = geo:L.RGN
+        || ?type = geo:H.OCN || ?type = geo:H.SEA
+        || ?type = geo:L.AREA || ?type = geo:L.CONT || ?type = geo:L.RGN
         || ?type = geo:S.CMTY || ?type = geo:S.HSTS || ?type = geo:S.MNMT || ?type = geo:S.MUS || ?type = geo:S.PRN || ?type = geo:S.RUIN
         || ?type = geo:T.ISL || ?type = geo:T.PEN
         || ?type = geo:V.FRST
     )
 
     # allow only specific codes or locations in specific countries
+    OPTIONAL { ?concept geo:countryCode ?country }
     FILTER(?type = geo:H.OCN || ?type = geo:H.SEA || ?type = geo:L.CONT
         || ?type = geo:A.ADM1 || ?type = geo:A.ADM1H
         || ?type = geo:A.PCL || ?type = geo:A.PCLD || ?type = geo:A.PCLF || ?type = geo:A.PCLH || ?type = geo:A.PCLI || ?type = geo:A.PCLS
@@ -53,6 +54,7 @@ SELECT ?concept ?type ?literal WHERE {
         || ?country = "SI"
         || ?country = "SK"
         || ?country = "UA"
+        || ?country = "US"
         || ?country = "XK"
     )
 }
