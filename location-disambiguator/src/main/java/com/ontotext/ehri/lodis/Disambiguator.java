@@ -38,8 +38,10 @@ public class Disambiguator {
                 }
 
                 // store the candidate and its ancestors from other lookups
-                candidate2ancestors.put(candidate, ancestors);
-                if (ancestors.size() > maxNumAncestors) maxNumAncestors = ancestors.size();
+                if (!candidate2ancestors.containsKey(candidate) || candidate2ancestors.get(candidate).size() < ancestors.size()) {
+                    candidate2ancestors.put(candidate, ancestors);
+                    if (ancestors.size() > maxNumAncestors) maxNumAncestors = ancestors.size();
+                }
             }
         }
 
