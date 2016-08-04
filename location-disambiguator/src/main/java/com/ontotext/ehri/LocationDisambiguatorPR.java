@@ -132,8 +132,8 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                     double longitude = Double.parseDouble((String) ((Collection) longitudeFeature).iterator().next());
 
                     // parse population if present
-                    int population = 0;
-                    if (populationFeature != null) population = Integer.parseInt((String) ((Collection) populationFeature).iterator().next());
+                    long population = 0;
+                    if (populationFeature != null) population = Long.parseLong((String) ((Collection) populationFeature).iterator().next());
 
                     // parse the number of links if present
                     int numLinks = 0;

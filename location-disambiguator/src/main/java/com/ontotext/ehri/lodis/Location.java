@@ -9,11 +9,11 @@ public class Location implements Comparable<Location> {
     private int id;
     private String type;
     private double latitude, longitude;
-    private int population;
+    private long population;
     private int numLinks;
     private Set<Integer> ancestors;
 
-    public Location(int id, String type, double latitude, double longitude, int population, int numLinks, Set<Integer> ancestors) {
+    public Location(int id, String type, double latitude, double longitude, long population, int numLinks, Set<Integer> ancestors) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
@@ -39,7 +39,7 @@ public class Location implements Comparable<Location> {
         return longitude;
     }
 
-    public int getPopulation() {
+    public long getPopulation() {
         return population;
     }
 
