@@ -1,10 +1,13 @@
 PREFIX geo: <http://www.geonames.org/ontology#>
+PREFIX pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?concept ?type ?literal WHERE {
     ?concept rdf:type geo:Feature.
     ?concept geo:featureCode ?type.
     ?concept geo:featureClass ?class.
+    ?concept pos:lat ?latitude.
+    ?concept pos:long ?longitude.
 
     # get all names
     ?concept geo:name | geo:officialName | geo:alternateName ?literal.
@@ -19,42 +22,47 @@ SELECT ?concept ?type ?literal WHERE {
     )
 
     # allow only specific codes or locations in specific countries
-    OPTIONAL { ?concept geo:countryCode ?country }
-    FILTER(?type = geo:H.OCN || ?type = geo:H.SEA || ?type = geo:L.CONT
-        || ?type = geo:A.ADM1 || ?type = geo:A.ADM1H
-        || ?type = geo:A.PCL || ?type = geo:A.PCLD || ?type = geo:A.PCLF || ?type = geo:A.PCLH || ?type = geo:A.PCLI || ?type = geo:A.PCLS
-        || ?type = geo:P.PPLC || ?type = geo:P.PPLCH || ?type = geo:P.PPLA
-        || ?country = "AL"
-        || ?country = "AT"
-        || ?country = "BA"
-        || ?country = "BE"
-        || ?country = "BG"
-        || ?country = "BY"
-        || ?country = "CS"
-        || ?country = "CZ"
-        || ?country = "DE"
-        || ?country = "EE"
-        || ?country = "FR"
-        || ?country = "GB"
-        || ?country = "GR"
-        || ?country = "HR"
-        || ?country = "HU"
-        || ?country = "IL"
-        || ?country = "IT"
-        || ?country = "LT"
-        || ?country = "LV"
-        || ?country = "MD"
-        || ?country = "ME"
-        || ?country = "MK"
-        || ?country = "NL"
-        || ?country = "PL"
-        || ?country = "RO"
-        || ?country = "RS"
-        || ?country = "RU"
-        || ?country = "SI"
-        || ?country = "SK"
-        || ?country = "UA"
-        || ?country = "US"
-        || ?country = "XK"
-    )
+    {
+        ?concept geo:countryCode ?country.
+        FILTER(?type = geo:A.ADM1 || ?type = geo:A.ADM1H
+            || ?type = geo:A.PCL || ?type = geo:A.PCLD || ?type = geo:A.PCLF || ?type = geo:A.PCLH || ?type = geo:A.PCLI || ?type = geo:A.PCLS
+            || ?type = geo:P.PPLC || ?type = geo:P.PPLCH || ?type = geo:P.PPLA
+            || ?country = "AL"
+            || ?country = "AT"
+            || ?country = "BA"
+            || ?country = "BE"
+            || ?country = "BG"
+            || ?country = "BY"
+            || ?country = "CS"
+            || ?country = "CZ"
+            || ?country = "DE"
+            || ?country = "EE"
+            || ?country = "FR"
+            || ?country = "GB"
+            || ?country = "GR"
+            || ?country = "HR"
+            || ?country = "HU"
+            || ?country = "IL"
+            || ?country = "IT"
+            || ?country = "LT"
+            || ?country = "LV"
+            || ?country = "MD"
+            || ?country = "ME"
+            || ?country = "MK"
+            || ?country = "NL"
+            || ?country = "PL"
+            || ?country = "RO"
+            || ?country = "RS"
+            || ?country = "RU"
+            || ?country = "SI"
+            || ?country = "SK"
+            || ?country = "UA"
+            || ?country = "US"
+            || ?country = "XK"
+        )
+
+    } UNION {
+        OPTIONAL { ?concept geo:countryCode ?country }
+        FILTER(!BOUND(?country))
+    }
 }
