@@ -1,5 +1,5 @@
 Phase: FilterSomeLowercaseLookups
-Input: Access Point Lookup
+Input: AccessPoint Lookup
 Options: control = once
 
 Rule: FilterSomeLowercaseLookups
@@ -7,7 +7,7 @@ Rule: FilterSomeLowercaseLookups
 -->
 {
 	try {
-		AnnotationSet accessPoints = inputAS.get("Access Point");
+		AnnotationSet accessPoints = inputAS.get("AccessPoint");
 		AnnotationSet lookups = inputAS.get("Lookup");
 		
 		for (Annotation accessPoint : accessPoints) {

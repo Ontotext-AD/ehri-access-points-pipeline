@@ -61,7 +61,7 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
     }
 
     @RunTime
-    @CreoleParameter(defaultValue = "Access Point", comment = "Name of the annotation type to use as context for disambiguation.")
+    @CreoleParameter(defaultValue = "AccessPoint", comment = "Name of the annotation type to use as context for disambiguation.")
     public void setContextAnnotationType(String contextAnnotationType) {
         this.contextAnnotationType = contextAnnotationType;
     }

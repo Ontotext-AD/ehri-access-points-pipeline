@@ -3,7 +3,7 @@ Imports: {
 }
 
 Phase: FilterLocationsInPersonAccessPoints
-Input: Access Point Location Lookup
+Input: AccessPoint Location Lookup
 Options: control = once
 
 Rule: FilterLocationsInPersonAccessPoints
@@ -12,7 +12,7 @@ Rule: FilterLocationsInPersonAccessPoints
 {
 	try {
 		Pattern looksLikePerson = Pattern.compile("^[^,]+, [^,]+$");
-		AnnotationSet accessPoints = inputAS.get("Access Point");
+		AnnotationSet accessPoints = inputAS.get("AccessPoint");
 		AnnotationSet locations = inputAS.get("Location");
 		AnnotationSet names = inputAS.get("Lookup");
 		

@@ -36,7 +36,7 @@ public class AtomizerTests {
             atomizer.execute();
 
             // check annotation counts
-            assertEquals("unexpected number of access-point annotations", 666, document.getAnnotations().get("Access Point").size());
+            assertEquals("unexpected number of access-point annotations", 666, document.getAnnotations().get("AccessPoint").size());
             assertEquals("unexpected number of atom annotations", 1229, document.getAnnotations().get("Atom").size());
             assertEquals("unexpected number of token annotations", 1969, document.getAnnotations().get("Token").size());
 
