@@ -1,0 +1,46 @@
+Imports: {
+	import java.util.regex.Pattern;
+}
+
+Phase: AddBias
+Input: Location
+Options: control = once
+
+Rule: AddBias
+({Location})
+-->
+{
+	try {
+		Pattern favoured = Pattern.compile("^(KZ|Vernichtungslager)_|_(concentration|extermination)_camp$");
+		int wikipediaPrefixLength = "http://en.wikipedia.org/wiki/".length();
+
+		for (Annotation location : inputAS.get("Location")) {
+			Collection<String> wikipediaLinks = (Collection<String>) location.getFeatures().get("wikipediaLinks");
+			if (wikipediaLinks == null) continue;
+
+			boolean isFavoured = false;
+			for (String wikipediaLink : wikipediaLinks) {
+
+				if (wikipediaLink.length() <= wikipediaPrefixLength) {
+					System.err.println(ruleName() + ": unexpected wikipedia link: " + wikipediaLink);
+					continue;
+				}
+
+				if (favoured.matcher(wikipediaLink.substring(wikipediaPrefixLength)).find()) {
+					isFavoured = true;
+					break;
+				}
+			}
+
+			if (isFavoured) {
+				List<String> wikipediaLinksDuped = new ArrayList<String>(wikipediaLinks.size() * 2);
+				wikipediaLinksDuped.addAll(wikipediaLinks);
+				wikipediaLinksDuped.addAll(wikipediaLinks);
+				location.getFeatures().put("wikipediaLinks", wikipediaLinksDuped);
+			}
+		}
+
+	} catch (Exception e) {
+		throw new NonFatalJapeException(e);
+	}
+}

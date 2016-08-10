@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
 
     // names of annotation types
-    private static final String ACCESS_POINT_TYPE = "Access Point";
+    private static final String ACCESS_POINT_TYPE = "AccessPoint";
     private static final String ATOM_TYPE = "Atom";
     private static final String TOKEN_TYPE = "Token";
 

@@ -1,0 +1,34 @@
+Imports: {
+	import java.util.regex.Pattern;
+}
+
+Phase: FilterLocationsInPersonAccessPoints
+Input: AccessPoint Location Lookup
+Options: control = once
+
+Rule: FilterLocationsInPersonAccessPoints
+({Lookup})
+-->
+{
+	try {
+		Pattern looksLikePerson = Pattern.compile("^[^,]+, [^,]+$");
+		AnnotationSet accessPoints = inputAS.get("AccessPoint");
+		AnnotationSet locations = inputAS.get("Location");
+		AnnotationSet names = inputAS.get("Lookup");
+		
+		for (Annotation accessPoint : accessPoints) {
+			if (!looksLikePerson.matcher(doc.getContent().getContent(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset()).toString()).matches()) continue;
+
+			AnnotationSet namesInAccessPoint = names.get(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset());
+			if (namesInAccessPoint.isEmpty()) continue;
+
+			AnnotationSet locationsInAccessPoint = locations.get(accessPoint.getStartNode().getOffset(), accessPoint.getEndNode().getOffset());
+			outputAS.removeAll(locationsInAccessPoint);
+		}
+
+		outputAS.removeAll(names);
+
+	} catch (Exception e) {
+		throw new NonFatalJapeException(e);
+	}
+}

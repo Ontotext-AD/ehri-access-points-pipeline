@@ -1,0 +1,5 @@
+<CREOLE-DIRECTORY>
+    <CREOLE>
+        <JAR SCAN="true">location-disambiguator.jar</JAR>
+    </CREOLE>
+</CREOLE-DIRECTORY>
