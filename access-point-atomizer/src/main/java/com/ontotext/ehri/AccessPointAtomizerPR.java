@@ -13,10 +13,15 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.util.InvalidOffsetException;
 import gate.util.SimpleFeatureMapImpl;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+import org.apache.commons.codec.language.DaitchMokotoffSoundex;
 
 import java.text.Normalizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.sf.junidecode.Junidecode.unidecode;
 
 @CreoleResource(name = "Access Point Atomizer", comment = "Atomizes EHRI access points.")
 public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
@@ -75,6 +80,9 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
 
     // sequence of spaces to be squashed in fingerprint
     private static final Pattern SPACE_SEQUENCE = Pattern.compile("\\s+");
+
+    // phonetic encoder
+    private static final StringEncoder ENCODER = new DaitchMokotoffSoundex();
 
     private int annotationID;
     private int nodeID;
@@ -200,6 +208,12 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
         text = PUNCTUATION_CHARACTER.matcher(text).replaceAll(" ");
         text = SPACE_SEQUENCE.matcher(text).replaceAll(" ");
         text = text.trim();
+        return text;
+    }
+
+    public static String encodePhonetics(String text) throws EncoderException {
+        text = unidecode(text);
+        text = ENCODER.encode(text);
         return text;
     }
 }
