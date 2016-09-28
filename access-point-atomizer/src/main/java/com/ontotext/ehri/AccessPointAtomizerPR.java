@@ -84,6 +84,9 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
     // phonetic encoder
     private static final StringEncoder ENCODER = new DaitchMokotoffSoundex();
 
+    // name of the phonetic encoding feature
+    private static final String ENCODING_FEATURE = "phoneticEncoding";
+
     private int annotationID;
     private int nodeID;
 
@@ -109,35 +112,41 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
 
     @Override
     public void execute() throws ExecutionException {
-        AnnotationFactory factory = new DefaultAnnotationFactory();
-        AnnotationSet outputAS = document.getAnnotations(outputASName);
-        DocumentContent content = document.getContent();
-        Matcher accessPointMatcher = ACCESS_POINT_MATCH.matcher(content.toString());
 
-        // iterate through access-point matches
-        while (accessPointMatcher.find()) {
-            String accessPointText = accessPointMatcher.group();
-            FeatureMap accessPointFeatures = new SimpleFeatureMapImpl();
-            Node accessPointStart = new NodeImpl(nodeID++, (long) accessPointMatcher.start());
-            Node accessPointEnd = new NodeImpl(nodeID++, (long) accessPointMatcher.end());
-            factory.createAnnotationInSet(outputAS, annotationID++, accessPointStart, accessPointEnd, ACCESS_POINT_TYPE, accessPointFeatures);
+        try {
+            AnnotationFactory factory = new DefaultAnnotationFactory();
+            AnnotationSet outputAS = document.getAnnotations(outputASName);
+            DocumentContent content = document.getContent();
+            Matcher accessPointMatcher = ACCESS_POINT_MATCH.matcher(content.toString());
 
-            // the start of the first atom is the start of the entire access point
-            Matcher atomSplitter = ATOM_SPLIT.matcher(accessPointText);
-            Node atomStart = new NodeImpl(nodeID++, accessPointStart.getOffset());
+            // iterate through access-point matches
+            while (accessPointMatcher.find()) {
+                String accessPointText = accessPointMatcher.group();
+                FeatureMap accessPointFeatures = new SimpleFeatureMapImpl();
+                Node accessPointStart = new NodeImpl(nodeID++, (long) accessPointMatcher.start());
+                Node accessPointEnd = new NodeImpl(nodeID++, (long) accessPointMatcher.end());
+                factory.createAnnotationInSet(outputAS, annotationID++, accessPointStart, accessPointEnd, ACCESS_POINT_TYPE, accessPointFeatures);
 
-            // iterate through atom-boundary matches
-            while (atomSplitter.find()) {
-                Node atomEnd = new NodeImpl(nodeID++, accessPointStart.getOffset() + (long) atomSplitter.start());
+                // the start of the first atom is the start of the entire access point
+                Matcher atomSplitter = ATOM_SPLIT.matcher(accessPointText);
+                Node atomStart = new NodeImpl(nodeID++, accessPointStart.getOffset());
+
+                // iterate through atom-boundary matches
+                while (atomSplitter.find()) {
+                    Node atomEnd = new NodeImpl(nodeID++, accessPointStart.getOffset() + (long) atomSplitter.start());
+                    annotateAtom(factory, outputAS, content, atomStart, atomEnd);
+
+                    // update the start of the next atom
+                    atomStart = new NodeImpl(nodeID++, accessPointStart.getOffset() + (long) atomSplitter.end());
+                }
+
+                // the end of the last atom is the end of the entire access point
+                Node atomEnd = new NodeImpl(nodeID++, accessPointEnd.getOffset());
                 annotateAtom(factory, outputAS, content, atomStart, atomEnd);
-
-                // update the start of the next atom
-                atomStart = new NodeImpl(nodeID++, accessPointStart.getOffset() + (long) atomSplitter.end());
             }
 
-            // the end of the last atom is the end of the entire access point
-            Node atomEnd = new NodeImpl(nodeID++, accessPointEnd.getOffset());
-            annotateAtom(factory, outputAS, content, atomStart, atomEnd);
+        } catch (Exception e) {
+            throw new ExecutionException(e);
         }
     }
 
@@ -150,11 +159,11 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
      * @param atomStart The start node of the atom.
      * @param atomEnd   The end node of the atom.
      */
-    private void annotateAtom(AnnotationFactory factory, AnnotationSet as, DocumentContent content, Node atomStart, Node atomEnd) {
+    private void annotateAtom(AnnotationFactory factory, AnnotationSet as, DocumentContent content, Node atomStart, Node atomEnd) throws EncoderException {
         String atomText = extractText(content, atomStart, atomEnd);
 
         // add annotation only if the atom is valid
-        if (atomText != null && atomText.length() > 0 && ! ATOM_FILTER.matcher(atomText).matches()) {
+        if (atomText != null && atomText.length() > 0 && !ATOM_FILTER.matcher(atomText).matches()) {
             FeatureMap atomFeatures = new SimpleFeatureMapImpl();
             atomFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(atomText));
             factory.createAnnotationInSet(as, annotationID++, atomStart, atomEnd, ATOM_TYPE, atomFeatures);
@@ -168,6 +177,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
                 String tokenText = extractText(content, tokenStart, tokenEnd);
                 FeatureMap tokenFeatures = new SimpleFeatureMapImpl();
                 tokenFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(tokenText));
+                tokenFeatures.put(ENCODING_FEATURE, encodePhonetics(tokenText));
                 factory.createAnnotationInSet(as, annotationID++, tokenStart, tokenEnd, TOKEN_TYPE, tokenFeatures);
             }
         }
