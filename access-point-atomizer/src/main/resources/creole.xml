@@ -1,5 +1,7 @@
 <CREOLE-DIRECTORY>
     <CREOLE>
+        <JAR>lib/commons-codec.jar</JAR>
+        <JAR>lib/junidecode.jar</JAR>
         <JAR SCAN="true">access-point-atomizer.jar</JAR>
     </CREOLE>
 </CREOLE-DIRECTORY>

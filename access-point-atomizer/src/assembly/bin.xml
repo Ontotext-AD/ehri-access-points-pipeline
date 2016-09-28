@@ -28,4 +28,17 @@
             </includes>
         </fileSet>
     </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <fileMode>644</fileMode>
+            <outputDirectory>/lib</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <includes>
+                <include>commons-codec:commons-codec:jar:*</include>
+                <include>com.moparisthebest:junidecode:jar:*</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+
 </assembly>
