@@ -166,6 +166,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
         if (atomText != null && atomText.length() > 0 && !ATOM_FILTER.matcher(atomText).matches()) {
             FeatureMap atomFeatures = new SimpleFeatureMapImpl();
             atomFeatures.put(FINGERPRINT_FEATURE, extractFingerprint(atomText));
+            atomFeatures.put(ENCODING_FEATURE, encodePhonetics(atomText));
             factory.createAnnotationInSet(as, annotationID++, atomStart, atomEnd, ATOM_TYPE, atomFeatures);
 
             Matcher tokenMatcher = TOKEN_MATCH.matcher(atomText);
