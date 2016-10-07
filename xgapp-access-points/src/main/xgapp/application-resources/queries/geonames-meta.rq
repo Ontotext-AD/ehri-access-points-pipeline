@@ -66,6 +66,16 @@ SELECT DISTINCT ?concept (geo:Feature AS ?type) ?code ?latitude ?longitude ?ance
         FILTER(!BOUND(?country))
     }
 
-    # get all ancestors transitively
-    ?concept geo:parentFeature+ ?ancestors.
+    # get up to 10 ancestors
+    ?concept geo:parentFeature
+           | geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+        ?ancestors.
 }
