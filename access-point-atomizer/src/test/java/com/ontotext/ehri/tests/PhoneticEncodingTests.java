@@ -33,22 +33,16 @@ public class PhoneticEncodingTests {
         phoneticallyIdentical("Dniprodzerzhyns'k", "Dniprodzerzhyns’k");
         phoneticallyIdentical("Dniprodzerzhyns'k", "Днепродзержинск");
 
-        phoneticallyIdentical("Dobrich", "Dobrič");
-        phoneticallyIdentical("Dobrich", "Dobritch");
-        phoneticallyIdentical("Dobrich", "Dobritsch");
-        phoneticallyIdentical("Dobrich", "Dobricz");
-        phoneticallyIdentical("Dobrich", "Добрич");
-
         phoneticallyIdentical("Zrenjanin", "Зренянин");
         phoneticallyIdentical("Zrenjanin", "Зрењанин");
 
         phoneticallyIdentical("Trešnjevac", "Трешњевац");
 
-        phoneticallyIdentical("Koprivnica", "Koprivnicza");
-        phoneticallyIdentical("Koprivnica", "Kopriwnitza");
-        phoneticallyIdentical("Koprivnica", "Копривница");
-        phoneticallyIdentical("Koprivnica", "Копривниця");
-        phoneticallyIdentical("Koprivnica", "Копрівніця");
+        phoneticallyIdentical("Koprivnitsa", "Koprivnicza");
+        phoneticallyIdentical("Koprivnitsa", "Kopriwnitza");
+        phoneticallyIdentical("Koprivnitsa", "Копривница");
+        phoneticallyIdentical("Koprivnitsa", "Копривниця");
+        phoneticallyIdentical("Koprivnitsa", "Копрівніця");
 
         phoneticallyIdentical("Nizhny Novgorod", "Nischni Nowgorod");
         phoneticallyIdentical("Nizhny Novgorod", "Nishni-Nowgorod");
@@ -67,12 +61,10 @@ public class PhoneticEncodingTests {
         phoneticallyIdentical("Qiryat Yam", "קריית ים");
         phoneticallyIdentical("Qiryat Yam", "קרית ימ");
 
-        phoneticallyIdentical("Bet She'an", "Beisān");
         phoneticallyIdentical("Bet She'an", "Beit Shean");
         phoneticallyIdentical("Bet She'an", "Beit She'an");
         phoneticallyIdentical("Bet She'an", "Beït Shéan");
         phoneticallyIdentical("Bet She'an", "Bet Sche’an");
-        phoneticallyIdentical("Bet She'an", "بيسان");
         phoneticallyIdentical("Bet She'an", "בית שאן");
     }
 
