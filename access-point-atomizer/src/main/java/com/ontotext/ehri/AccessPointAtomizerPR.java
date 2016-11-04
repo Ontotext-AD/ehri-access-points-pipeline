@@ -15,7 +15,7 @@ import gate.util.InvalidOffsetException;
 import gate.util.SimpleFeatureMapImpl;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
-import org.apache.commons.codec.language.DaitchMokotoffSoundex;
+import org.apache.commons.codec.language.ColognePhonetic;
 
 import java.text.Normalizer;
 import java.util.regex.Matcher;
@@ -82,7 +82,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
     private static final Pattern SPACE_SEQUENCE = Pattern.compile("\\s+");
 
     // phonetic encoder
-    private static final StringEncoder ENCODER = new DaitchMokotoffSoundex();
+    private static final StringEncoder ENCODER = new ColognePhonetic();
 
     // name of the phonetic encoding feature
     private static final String ENCODING_FEATURE = "phoneticEncoding";
