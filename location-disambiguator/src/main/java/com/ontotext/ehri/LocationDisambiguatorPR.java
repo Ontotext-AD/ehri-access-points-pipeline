@@ -18,7 +18,6 @@ import java.util.*;
 public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
     private static final String GEONAMES_ID_PREFIX = "http://sws.geonames.org/";
     private static final String GEONAMES_ID_SUFFIX = "/";
-    private static final String GEONAMES_TYPE_PREFIX = "http://www.geonames.org/ontology#";
 
     private static final String ID_FEATURE_NAME = "inst";
     private static final String TYPE_FEATURE_NAME = "code";
@@ -123,7 +122,6 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
 
                     // parse type
                     String type = (String) ((Collection) typeFeature).iterator().next();
-                    type = type.substring(GEONAMES_TYPE_PREFIX.length());
 
                     // parse latitude and longitude
                     double latitude = Double.parseDouble((String) ((Collection) latitudeFeature).iterator().next());
