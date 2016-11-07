@@ -122,7 +122,7 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                     int id = Integer.parseInt(url.substring(GEONAMES_ID_PREFIX.length(), url.length() - GEONAMES_ID_SUFFIX.length()));
 
                     // parse type
-                    String type = (String) typeFeature;
+                    String type = (String) ((Collection) typeFeature).iterator().next();
                     type = type.substring(GEONAMES_TYPE_PREFIX.length());
 
                     // parse latitude and longitude
