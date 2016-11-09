@@ -96,7 +96,7 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
             // collect candidate locations at each lookup
             Set<Integer> addedAnnotationIDs = new HashSet<Integer>();
             AnnotationSet candidatesInContext = candidateAnnotationSet.get(context.getStartNode().getOffset(), context.getEndNode().getOffset());
-            for (Annotation lookup : candidatesInContext) {
+            for (Annotation lookup : leftmostLongest(candidatesInContext)) {
                 if (addedAnnotationIDs.contains(lookup.getId())) continue;
 
                 // collect candidate locations at this lookup
@@ -165,6 +165,34 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
             context.getFeatures().put(LATITUDE_FEATURE_NAME, centerCoordinates[0]);
             context.getFeatures().put(LONGITUDE_FEATURE_NAME, centerCoordinates[1]);
         }
+    }
+
+    private static Set<Annotation> leftmostLongest(Set<Annotation> annotations) {
+        if (annotations.size() < 2) return annotations;
+
+        Set<Annotation> sorted = new TreeSet<Annotation>(new Comparator<Annotation>() {
+
+            @Override
+            public int compare(Annotation a, Annotation b) {
+
+                // compare start offsets
+                int startComparison = a.getStartNode().getOffset().compareTo(b.getStartNode().getOffset());
+                if (startComparison != 0) return startComparison;
+
+                // compare lengths
+                int lengthComparison = Long.compare(
+                        b.getEndNode().getOffset() - b.getStartNode().getOffset(),
+                        a.getEndNode().getOffset() - a.getStartNode().getOffset()
+                );
+                if (lengthComparison != 0) return lengthComparison;
+
+                // ensure consistency
+                return a.getId().compareTo(b.getId());
+            }
+        });
+
+        sorted.addAll(annotations);
+        return sorted;
     }
 
     /**

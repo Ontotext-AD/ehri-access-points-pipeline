@@ -104,8 +104,8 @@ public class Location implements Comparable<Location> {
 
         // prefer places according to type priority
         for (String t : TYPE_PRIORITY) {
-            boolean thisMatches = type.startsWith(t);
-            boolean otherMatches = other.type.startsWith(t);
+            boolean thisMatches = type.equals(t);
+            boolean otherMatches = other.type.equals(t);
 
             if (thisMatches && otherMatches) break;
             else if (thisMatches) return -1;
