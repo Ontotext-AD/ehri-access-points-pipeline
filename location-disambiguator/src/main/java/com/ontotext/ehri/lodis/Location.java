@@ -5,22 +5,22 @@ import java.util.Set;
 public class Location implements Comparable<Location> {
     private static final String[] TYPE_PRIORITY = {
 
-            // countries and major cities
+            // countries
+            "A.PCLH",  // historical political entity
+            "A.PCLI",  // independent political entity
             "A.PCL",   // political entity
+
+            // major cities
             "P.PPLC",  // capital of a political entity
             "P.PPLA",  // seat of a first-order administrative division
 
-            // important landmasses
+            // major landmasses
             "L.CONT",  // continent
             "L.RGN",   // region
-            "T.PEN",   // peninsula
-            "T.ISL",   // island
 
-            // bodies of water
+            // major bodies of water
             "H.OCN",   // ocean
             "H.SEA",   // sea
-            "H.LK",    // lake
-            "H.STM",   // stream
 
             // concentration camps
             "S.HSTS",  // historical site
@@ -34,6 +34,14 @@ public class Location implements Comparable<Location> {
             "P.PPLA4", // seat of a fourth-order administrative division
             "P.PPL",   // populated place
 
+            // minor landmasses
+            "T.PEN",   // peninsula
+            "T.ISL",   // island
+
+            // minor bodies of water
+            "H.LK",    // lake
+            "H.STM",   // stream
+
             // administrative divisions
             "A.ADM1",  // first-order administrative division
             "A.ADM2",  // second-order administrative division
@@ -41,10 +49,9 @@ public class Location implements Comparable<Location> {
             "A.ADM4",  // fourth-order administrative division
             "A.ADM5",  // fifth-order administrative division
             "A.ADMD",  // administrative division
-
-            // class priority
-            "P", "A", "L", "T", "V", "H", "U", "R", "S"
     };
+
+    private static final String[] CLASS_PRIORITY = { "P", "A", "L", "T", "V", "H", "U", "R", "S" };
 
     private int id;
     private String type;
@@ -108,8 +115,20 @@ public class Location implements Comparable<Location> {
             boolean otherMatches = other.type.equals(t);
 
             if (thisMatches && otherMatches) break;
-            else if (thisMatches) return -1;
-            else if (otherMatches) return +1;
+            if (thisMatches) return -1;
+            if (otherMatches) return +1;
+        }
+
+        // prefer places according to class priority
+        String thisClass = type.substring(0, 1);
+        String otherClass = other.type.substring(0, 1);
+        for (String c : CLASS_PRIORITY) {
+            boolean thisMatches = thisClass.equals(c);
+            boolean otherMatches = otherClass.equals(c);
+
+            if (thisMatches && otherMatches) break;
+            if (thisMatches) return -1;
+            if (otherMatches) return +1;
         }
 
         // prefer more populated places
