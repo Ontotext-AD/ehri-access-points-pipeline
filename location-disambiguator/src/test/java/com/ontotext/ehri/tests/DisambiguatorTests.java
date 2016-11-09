@@ -28,7 +28,7 @@ public class DisambiguatorTests {
         SortedSet<Location> disambiguated = disambiguate(locations, false);
         assertTrue("expected one result", disambiguated.size() == 1);
         assertTrue("expected candidate with larger population (id=2)", disambiguated.iterator().next().getId() == 2);
-        locations.iterator().next().add(new Location(3, "A.PCL", 0.0, 0.0, 0, new HashSet<Integer>()));
+        locations.iterator().next().add(new Location(3, "A.PCLI", 0.0, 0.0, 0, new HashSet<Integer>()));
         assertTrue("expected candidate which is a country (id=3)", disambiguate(locations, false).iterator().next().getId() == 3);
 
         // test basic ancestor chaining without disambiguation ancestors
@@ -38,7 +38,7 @@ public class DisambiguatorTests {
         lookupOne.add(new Location(2, "P.PPL", 0.0, 0.0, 0, new HashSet<Integer>()));
         SortedSet<Location> lookupTwo = new TreeSet<Location>();
         lookupTwo.add(new Location(3, "P.PPL", 0.0, 0.0, 0, new HashSet<Integer>()));
-        lookupTwo.add(new Location(4, "A.PCL", 0.0, 0.0, 0, new HashSet<Integer>()));
+        lookupTwo.add(new Location(4, "A.PCLI", 0.0, 0.0, 0, new HashSet<Integer>()));
         locations.add(lookupOne);
         locations.add(lookupTwo);
         disambiguated = disambiguate(locations, false);
@@ -56,10 +56,10 @@ public class DisambiguatorTests {
         locations = new HashSet<SortedSet<Location>>();
         lookupOne = new TreeSet<Location>();
         lookupOne.add(new Location(1, "P.PPLA", 0.0, 0.0, 0, new HashSet<Integer>(Arrays.asList(4))));
-        lookupOne.add(new Location(2, "A.PCL", 0.0, 0.0, 0, new HashSet<Integer>()));
+        lookupOne.add(new Location(2, "A.PCLI", 0.0, 0.0, 0, new HashSet<Integer>()));
         lookupTwo = new TreeSet<Location>();
         lookupTwo.add(new Location(3, "P.PPL", 0.0, 0.0, 0, new HashSet<Integer>(Arrays.asList(2))));
-        lookupTwo.add(new Location(4, "A.PCL", 0.0, 0.0, 0, new HashSet<Integer>()));
+        lookupTwo.add(new Location(4, "A.PCLI", 0.0, 0.0, 0, new HashSet<Integer>()));
         SortedSet<Location> lookupThree = new TreeSet<Location>();
         lookupThree.add(new Location(5, "P.PPL", 0.0, 0.0, 0, new HashSet<Integer>()));
         lookupThree.add(new Location(6, "P.PPLA", 0.0, 0.0, 0, new HashSet<Integer>()));

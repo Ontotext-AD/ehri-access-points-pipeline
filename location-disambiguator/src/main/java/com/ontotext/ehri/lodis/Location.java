@@ -5,22 +5,18 @@ import java.util.Set;
 public class Location implements Comparable<Location> {
     private static final String[] TYPE_PRIORITY = {
 
-            // countries
+            // continents and oceans
+            "L.CONT",  // continent
+            "H.OCN",   // ocean
+
+            // countries and capitals
             "A.PCLH",  // historical political entity
             "A.PCLI",  // independent political entity
-            "A.PCL",   // political entity
-
-            // major cities
             "P.PPLC",  // capital of a political entity
+
+            // major cities and administrative divisions
             "P.PPLA",  // seat of a first-order administrative division
-
-            // major landmasses
-            "L.CONT",  // continent
-            "L.RGN",   // region
-
-            // major bodies of water
-            "H.OCN",   // ocean
-            "H.SEA",   // sea
+            "A.ADM1",  // first-order administrative division
 
             // concentration camps
             "S.HSTS",  // historical site
@@ -28,22 +24,23 @@ public class Location implements Comparable<Location> {
             "S.MNMT",  // monument
             "S.CMTY",  // cemetery
 
-            // minor cities
+            // cities
             "P.PPLA2", // seat of a second-order administrative division
             "P.PPLA3", // seat of a third-order administrative division
             "P.PPLA4", // seat of a fourth-order administrative division
-            "P.PPL",   // populated place
 
-            // minor landmasses
+            // landmasses
             "T.PEN",   // peninsula
             "T.ISL",   // island
+            "T.MTS",   // mountains
+            "L.RGN",   // region
 
-            // minor bodies of water
+            // bodies of water
+            "H.SEA",   // sea
             "H.LK",    // lake
             "H.STM",   // stream
 
             // administrative divisions
-            "A.ADM1",  // first-order administrative division
             "A.ADM2",  // second-order administrative division
             "A.ADM3",  // third-order administrative division
             "A.ADM4",  // fourth-order administrative division
