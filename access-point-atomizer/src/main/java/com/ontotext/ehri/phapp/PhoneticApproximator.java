@@ -3,6 +3,8 @@ package com.ontotext.ehri.phapp;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
+import java.util.SortedSet;
+
 import static net.sf.junidecode.Junidecode.unidecode;
 
 public class PhoneticApproximator implements StringEncoder {
@@ -63,16 +65,18 @@ public class PhoneticApproximator implements StringEncoder {
     }
 
     public static void main(String[] args) {
-        PhoneticApproximator phapp = new PhoneticApproximator();
-        String[] strings = { "Zhytomyr", "지토미르", "ジトームィル", "Jitomir", "Ĵitomir", "Jîtomîr", "Jıtomır", "Jytomyr", "Jytómyr", "Schytomyr", "Shitomir", "Zhitomir", "Zhytomyr", "Zhytomyr", "Zhytomyr", "Žitomir", "Žitomir", "Zitomiria", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Žõtomõr", "Zsitomir", "Żytomierz", "Żytomierz", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyras", "جيتومير", "ژیتومیر", "ژیتومیر", "ז'יטומיר", "זשיטאמיר", "Горад Жытомір", "Житомир", "Житомир", "Житомир", "Житомир", "Житомир", "Житомир", "Житомиръ", "Жытомир", "Ժիտոմիր", "ჟიტომირი", "日托米尔" };
+        String[] strings = { "shitomir", "zhitomir", "zhytomyr", "zitomir", "jitomireu", "zytomyr" };
 
-        for (String s : strings) {
+        for (int i = 1; i < strings.length; i++) {
+            String a = strings[i - 1];
+            String b = strings[i];
+            System.out.println("\"" + a + "\" => \"" + b + "\"");
 
-            try {
-                System.out.println("\"" + s + "\" => \"" + phapp.encode(s) + "\"");
-            } catch (EncoderException e) {
-                e.printStackTrace();
+            for (String[] diffPair : SuffixArrays.diffPairs(a, b)) {
+                System.out.println("\t\"" + diffPair[0] + "\" => \"" + diffPair[1] + "\"");
             }
+
+            System.out.println();
         }
     }
 }
