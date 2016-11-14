@@ -1,5 +1,6 @@
 package com.ontotext.ehri.phapp;
 
+import name.fraser.neil.plaintext.diff_match_patch;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
@@ -51,7 +52,7 @@ public class PhoneticApproximator implements StringEncoder {
     public String encode(String s) throws EncoderException {
         s = unidecode(s);
         s = s.toLowerCase();
-        s = approximate(s, SUBSTITUTIONS);
+        //s = approximate(s, SUBSTITUTIONS);
         s = squeeze(s);
         return s;
     }
@@ -62,17 +63,16 @@ public class PhoneticApproximator implements StringEncoder {
         throw new EncoderException("this encoder can only encode objects of class java.lang.String");
     }
 
-    public static void main(String[] args) {
-        String[] strings = { "shitomir", "zhitomir", "zhytomyr", "zitomir", "jitomireu", "zytomyr" };
+    public static void main(String[] args) throws EncoderException {
+        String[] strings = { "Zhytomyr", "지토미르", "ジトームィル", "Jitomir", "Ĵitomir", "Jîtomîr", "Jıtomır", "Jytomyr", "Jytómyr", "Schytomyr", "Shitomir", "Zhitomir", "Zhytomyr", "Zhytomyr", "Zhytomyr", "Žitomir", "Žitomir", "Zitomiria", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Žõtomõr", "Zsitomir", "Żytomierz", "Żytomierz", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyras", "جيتومير", "ژیتومیر", "ژیتومیر", "ז'יטומיר", "זשיטאמיר", "Горад Жытомір", "Житомир", "Житомир", "Житомир", "Житомир", "Житомир", "Житомир", "Житомиръ", "Жытомир", "Ժիտոմիր", "ჟიტომირი", "日托米尔" };
+        PhoneticApproximator phapp = new PhoneticApproximator();
+        diff_match_patch dmp = new diff_match_patch();
 
         for (int i = 1; i < strings.length; i++) {
-            String a = strings[i - 1];
-            String b = strings[i];
+            String a = phapp.encode(strings[i - 1]);
+            String b = phapp.encode(strings[i]);
             System.out.println("\"" + a + "\" => \"" + b + "\"");
-
-            for (CommonPrefix overlap : SuffixArrays.overlaps(a, b)) System.out.println("\t\"" + overlap.toString() + "\"");
-            //for (String[] diffPair : SuffixArrays.diffPairs(a, b)) System.out.println("\t\"" + diffPair[0] + "\" => \"" + diffPair[1] + "\"");
-
+            for (diff_match_patch.Diff diff : dmp.diff_main(a, b)) System.out.println(diff.operation + " \"" + diff.text + "\"");
             System.out.println();
         }
     }
