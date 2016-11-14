@@ -26,30 +26,33 @@ public class SuffixArrays {
         return result;
     }
 
-    public static SortedSet<String> overlaps(String a, String b) {
+    public static NavigableSet<CommonPrefix> overlaps(String a, String b) {
         if (a == null || b == null || a.length() == 0 || b.length() == 0) return null;
 
-        SortedSet<String> result = new TreeSet<String>(new Comparator<String>() {
-
-            @Override
-            public int compare(String a, String b) {
-                int lengthComparison = Integer.compare(b.length(), a.length());
-                if (lengthComparison != 0) return lengthComparison;
-
-                return a.compareTo(b);
-            }
-        });
-
+        NavigableSet<CommonPrefix> result = new TreeSet<CommonPrefix>();
         Suffix[] sortedSuffixes = sort(concatenate(suffixes(a), suffixes(b)));
+
         for (int i = 1; i < sortedSuffixes.length; i++) {
-            String lcp = sortedSuffixes[i - 1].longestCommonPrefix(sortedSuffixes[i]);
-            if (lcp == null || lcp.length() == 0) continue;
+            CommonPrefix lcp = sortedSuffixes[i - 1].longestCommonPrefix(sortedSuffixes[i]);
+            if (lcp == null || lcp.length == 0) continue;
             result.add(lcp);
         }
 
+        Set<CommonPrefix> nonMaximal = new HashSet<CommonPrefix>();
+        for (CommonPrefix cp : result) {
+            if (nonMaximal.contains(cp)) continue;
+
+            for (CommonPrefix otherCP : result) {
+                if (cp == otherCP || nonMaximal.contains(otherCP) || ! cp.contains(otherCP)) continue;
+                nonMaximal.add(otherCP);
+            }
+        }
+
+        result.removeAll(nonMaximal);
         return result;
     }
 
+    /*
     public static List<String[]> diffPairs(String a, String b) {
         String marker = "_";
 
@@ -78,4 +81,5 @@ public class SuffixArrays {
 
         return result;
     }
+    */
 }

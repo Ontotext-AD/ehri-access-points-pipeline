@@ -3,8 +3,6 @@ package com.ontotext.ehri.phapp;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
-import java.util.SortedSet;
-
 import static net.sf.junidecode.Junidecode.unidecode;
 
 public class PhoneticApproximator implements StringEncoder {
@@ -72,9 +70,8 @@ public class PhoneticApproximator implements StringEncoder {
             String b = strings[i];
             System.out.println("\"" + a + "\" => \"" + b + "\"");
 
-            for (String[] diffPair : SuffixArrays.diffPairs(a, b)) {
-                System.out.println("\t\"" + diffPair[0] + "\" => \"" + diffPair[1] + "\"");
-            }
+            for (CommonPrefix overlap : SuffixArrays.overlaps(a, b)) System.out.println("\t\"" + overlap.toString() + "\"");
+            //for (String[] diffPair : SuffixArrays.diffPairs(a, b)) System.out.println("\t\"" + diffPair[0] + "\" => \"" + diffPair[1] + "\"");
 
             System.out.println();
         }

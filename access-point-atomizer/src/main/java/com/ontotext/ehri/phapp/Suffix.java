@@ -3,19 +3,29 @@ package com.ontotext.ehri.phapp;
 import java.util.Arrays;
 
 public class Suffix implements Comparable<Suffix> {
-    private char[] chars;
-    private int from;
+    protected char[] chars;
+    protected int from;
 
     public Suffix(char[] chars, int from) {
         this.chars = chars;
         this.from = from;
     }
 
+    protected int length() {
+        return chars.length - from;
+    }
+
+    public CommonPrefix longestCommonPrefix(Suffix other) {
+        if (chars == other.chars) return null;
+
+        int cpl = 0;
+        while (cpl < length() && cpl < other.length() && chars[from + cpl] == other.chars[other.from + cpl]) cpl++;
+        return new CommonPrefix(this, other, cpl);
+    }
+
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        for (int i = from; i < chars.length; i++) result.append(chars[i]);
-        return result.toString();
+        return new String(chars, from, length());
     }
 
     @Override
@@ -57,25 +67,5 @@ public class Suffix implements Comparable<Suffix> {
         }
 
         return 0;
-    }
-
-    private int length() {
-        return chars.length - from;
-    }
-
-    public String longestCommonPrefix(Suffix other) {
-        if (chars == other.chars) return null;
-
-        StringBuilder sb = new StringBuilder();
-        int length = length();
-        int oLength = other.length();
-
-        for (int i = 0; i < Math.min(length, oLength); i++) {
-            char c = chars[from + i];
-            if (c == other.chars[other.from + i]) sb.append(c);
-            else break;
-        }
-
-        return sb.toString();
     }
 }
