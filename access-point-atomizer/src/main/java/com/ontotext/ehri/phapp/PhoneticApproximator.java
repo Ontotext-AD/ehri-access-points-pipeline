@@ -1,60 +1,44 @@
 package com.ontotext.ehri.phapp;
 
-import name.fraser.neil.plaintext.diff_match_patch;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
-import static net.sf.junidecode.Junidecode.unidecode;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Scanner;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 public class PhoneticApproximator implements StringEncoder {
-    private static final String[][] SUBSTITUTIONS = {
-            { "tsch", "s" },
-            { "sch", "s" },
-            { "tch", "s" },
-            { "ph", "f" },
-            { "gh", "g" },
-            { "kh", "h" },
-            { "wh", "h" },
-            { "ch", "s" },
-            { "cz", "s" },
-            { "sh", "s" },
-            { "sz", "s" },
-            { "th", "t" },
-            { "ts", "t" },
-            { "tz", "t" },
-            { "ks", "x" },
-            { "j", "i" },
-            { "y", "i" },
-            { "c", "k" },
-            { "q", "k" },
-            { "w", "v" },
-    };
+    private static final Comparator<String> LENGTH_COMPARATOR = new LengthComparator();
+    private static final Pattern TAB_SEPARATOR = Pattern.compile("\\t");
 
-    private static String approximate(String s, String[][] substitutions) {
-        for (String[] substitution : substitutions) s = s.replace(substitution[0], substitution[1]);
-        return s;
-    }
+    private SortedMap<String, String> substitutions;
 
-    private static String squeeze(String s) {
-        StringBuilder output = new StringBuilder();
+    public PhoneticApproximator(File substitutionsTSV) {
+        substitutions = new TreeMap<String, String>(LENGTH_COMPARATOR);
 
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (! Character.isLetter(c)) continue;
-            if (i != 0 && c == s.charAt(i - 1)) continue;
-            output.append(c);
+        try (BufferedReader reader = new BufferedReader(new FileReader(substitutionsTSV))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] values = TAB_SEPARATOR.split(line);
+                if (values.length > 2) {
+                    System.err.println("unexpected line: " + line);
+                    continue;
+                }
+
+                if (values.length == 2) substitutions.put(values[0], values[1]);
+                else substitutions.put(values[0], "");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        return output.toString();
-    }
-
-    @Override
-    public String encode(String s) throws EncoderException {
-        s = unidecode(s);
-        s = s.toLowerCase();
-        //s = approximate(s, SUBSTITUTIONS);
-        s = squeeze(s);
-        return s;
     }
 
     @Override
@@ -63,17 +47,37 @@ public class PhoneticApproximator implements StringEncoder {
         throw new EncoderException("this encoder can only encode objects of class java.lang.String");
     }
 
-    public static void main(String[] args) throws EncoderException {
-        String[] strings = { "Zhytomyr", "지토미르", "ジトームィル", "Jitomir", "Ĵitomir", "Jîtomîr", "Jıtomır", "Jytomyr", "Jytómyr", "Schytomyr", "Shitomir", "Zhitomir", "Zhytomyr", "Zhytomyr", "Zhytomyr", "Žitomir", "Žitomir", "Zitomiria", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Zjytomyr", "Žõtomõr", "Zsitomir", "Żytomierz", "Żytomierz", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyr", "Žytomyras", "جيتومير", "ژیتومیر", "ژیتومیر", "ז'יטומיר", "זשיטאמיר", "Горад Жытомір", "Житомир", "Житомир", "Житомир", "Житомир", "Житомир", "Житомир", "Житомиръ", "Жытомир", "Ժիտոմիր", "ჟიტომირი", "日托米尔" };
-        PhoneticApproximator phapp = new PhoneticApproximator();
-        diff_match_patch dmp = new diff_match_patch();
+    @Override
+    public String encode(String s) throws EncoderException {
+        String result = PhoneticModel.normalize(s);
+        if (substitutions == null) return result;
 
-        for (int i = 1; i < strings.length; i++) {
-            String a = phapp.encode(strings[i - 1]);
-            String b = phapp.encode(strings[i]);
-            System.out.println("\"" + a + "\" => \"" + b + "\"");
-            for (diff_match_patch.Diff diff : dmp.diff_main(a, b)) System.out.println(diff.operation + " \"" + diff.text + "\"");
-            System.out.println();
+        for (String source : substitutions.keySet()) result = result.replace(source, substitutions.get(source));
+        return result;
+    }
+
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println("USAGE: " + PhoneticApproximator.class.getName() + " <substitutions TSV>");
+            System.exit(1);
+        }
+
+        System.out.println("creating encoder");
+        PhoneticApproximator approximator = new PhoneticApproximator(new File(args[0]));
+
+        String safeWord = "stop";
+        System.out.println("enter word to encode or \"" + safeWord + "\" to stop");
+
+        Scanner scanner = new Scanner(System.in);
+        String line;
+
+        while (! safeWord.equals((line = scanner.nextLine()))) {
+
+            try {
+                System.out.println(approximator.encode(line));
+            } catch (EncoderException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
