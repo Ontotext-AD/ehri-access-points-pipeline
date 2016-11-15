@@ -52,8 +52,20 @@ public class PhoneticApproximator implements StringEncoder {
         String result = PhoneticModel.normalize(s);
         if (substitutions == null) return result;
 
-        for (String source : substitutions.keySet()) result = result.replace(source, substitutions.get(source));
+        result = substituteFully(result);
         return result;
+    }
+
+    private String substituteFully(String s) {
+        String result = substitute(s);
+        if (result.equals(s)) return result;
+
+        return substituteFully(result);
+    }
+
+    private String substitute(String s) {
+        for (String source : substitutions.keySet()) s = s.replace(source, substitutions.get(source));
+        return s;
     }
 
     public static void main(String[] args) {

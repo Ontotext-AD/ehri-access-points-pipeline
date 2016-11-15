@@ -13,10 +13,15 @@ public class PhoneticModel {
     private static final Comparator<String> LENGTH_COMPARATOR = new LengthComparator();
     private static final String TAB_SEPARATOR = "\t";
     private static final String LINE_SEPARATOR = "\n";
+    private static final Set<Character.UnicodeScript> ALLOWED_SCRIPTS = new HashSet<Character.UnicodeScript>();
+    static {
+        ALLOWED_SCRIPTS.add(Character.UnicodeScript.COMMON);
+        ALLOWED_SCRIPTS.add(Character.UnicodeScript.LATIN);
+    }
 
-    private static final int MIN_WORD_LENGTH = 5;
+    private static final int MIN_WORD_LENGTH = 4;
     private static final int MAX_DIFF_LENGTH = 4;
-    private static final double MAX_DIFF_TO_WORD_RATIO = 0.4;
+    private static final double MAX_DIFF_TO_WORD_RATIO = 0.5;
     private static final double MIN_FREQUENCY_RATIO = 0.1;
 
     private int minWordLength, maxDiffLength;
@@ -112,11 +117,18 @@ public class PhoneticModel {
         if (maxFrequency < frequency) maxFrequency = frequency;
     }
 
-    protected static String normalize(String s) {
-        s = unidecode(s);
-        s = s.toLowerCase();
-        s = squeeze(s);
-        return s;
+    protected static String normalize(String word) {
+        if (! scriptIsAllowed(word)) return "";
+
+        String result = unidecode(word);
+        result = result.toLowerCase();
+        result = squeeze(result);
+        return result;
+    }
+
+    private static boolean scriptIsAllowed(String word) {
+        for (int i = 0; i < word.length(); i++) if (! ALLOWED_SCRIPTS.contains(Character.UnicodeScript.of(word.codePointAt(i)))) return false;
+        return true;
     }
 
     private static String squeeze(String s) {
