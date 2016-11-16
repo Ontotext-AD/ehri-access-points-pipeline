@@ -11,21 +11,30 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+/**
+ * String encoder using a trained phonetic model.
+ */
 public class PhoneticApproximator implements StringEncoder {
     private static final Comparator<String> LENGTH_COMPARATOR = new LengthComparator();
     private static final Pattern TAB_SEPARATOR = Pattern.compile("\\t");
 
     private SortedMap<String, String> substitutions;
 
+    /**
+     * Initialize encoder from a TSV file with extracted substitutions.
+     */
     public PhoneticApproximator(File substitutionsTSV) throws FileNotFoundException {
         this(new FileReader(substitutionsTSV));
     }
 
+    /**
+     * Initialize encoder from a TSV file with extracted substitutions.
+     */
     public PhoneticApproximator(InputStream substitutionsTSV) {
         this(new InputStreamReader(substitutionsTSV, StandardCharsets.UTF_8));
     }
 
-    public PhoneticApproximator(Reader substitutionsTSV) {
+    private PhoneticApproximator(Reader substitutionsTSV) {
         substitutions = new TreeMap<String, String>(LENGTH_COMPARATOR);
 
         try (BufferedReader reader = new BufferedReader(substitutionsTSV)) {
@@ -62,13 +71,18 @@ public class PhoneticApproximator implements StringEncoder {
         return result;
     }
 
+    /**
+     * Repeatedly perform substitutions on string until convergence.
+     */
     private String substituteFully(String s) {
         String result = substitute(s);
         if (result.equals(s)) return result;
-
         return substituteFully(result);
     }
 
+    /**
+     * Perform substitutions on string.
+     */
     private String substitute(String s) {
         for (String source : substitutions.keySet()) s = s.replace(source, substitutions.get(source));
         return s;
