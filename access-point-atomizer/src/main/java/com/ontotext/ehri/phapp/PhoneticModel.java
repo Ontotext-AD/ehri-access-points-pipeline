@@ -22,7 +22,8 @@ public class PhoneticModel {
     private static final int MIN_WORD_LENGTH = 4;
     private static final int MAX_DIFF_LENGTH = 4;
     private static final double MAX_DIFF_TO_WORD_RATIO = 0.5;
-    private static final double MIN_FREQUENCY_RATIO = 0.1;
+    private static final double MIN_FREQUENCY_RATIO = 0.05;
+    private static final double DELETION_WEIGHT = 0.2;
 
     private int minWordLength, maxDiffLength;
     private double maxDiffToWordRatio;
@@ -147,11 +148,11 @@ public class PhoneticModel {
     }
 
     public void writeSubstitutions(File substitutionsTSV) {
-        writeSubstitutions(substitutionsTSV, MIN_FREQUENCY_RATIO);
+        writeSubstitutions(substitutionsTSV, MIN_FREQUENCY_RATIO, DELETION_WEIGHT);
     }
 
-    public void writeSubstitutions(File substitutionsTSV, double minFrequencyRatio) {
-        SortedMap<String, String> substitutions = substitutions(minFrequencyRatio);
+    public void writeSubstitutions(File substitutionsTSV, double minFrequencyRatio, double deletionWeight) {
+        SortedMap<String, String> substitutions = substitutions(minFrequencyRatio, deletionWeight);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(substitutionsTSV))) {
             for (String source : substitutions.keySet()) writer.write(source + TAB_SEPARATOR + substitutions.get(source) + LINE_SEPARATOR);
@@ -161,10 +162,10 @@ public class PhoneticModel {
     }
 
     public SortedMap<String, String> substitutions() {
-        return substitutions(MIN_FREQUENCY_RATIO);
+        return substitutions(MIN_FREQUENCY_RATIO, DELETION_WEIGHT);
     }
 
-    public SortedMap<String, String> substitutions(double minFrequencyRatio) {
+    public SortedMap<String, String> substitutions(double minFrequencyRatio, double deletionWeight) {
         if (minFrequencyRatio < 0 || minFrequencyRatio > 1) {
             System.err.println("minimum frequency ration must be between 0 and 1: " + minFrequencyRatio);
             return null;
@@ -187,6 +188,7 @@ public class PhoneticModel {
             }
 
             double frequencyRatio = (double) bestFrequency / (double) maxFrequency;
+            if (bestTarget.length() == 0) frequencyRatio *= deletionWeight;
             if (frequencyRatio < minFrequencyRatio) continue;
 
             if (source.equals(substitutions.get(bestTarget))) {
