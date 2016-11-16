@@ -21,24 +21,17 @@ public class PhoneticEncodingTests {
 
         phoneticallyIdentical("Vinnytsya", "Vinnitsa");
         phoneticallyIdentical("Vinnytsya", "Vinnytsya");
-        phoneticallyIdentical("Vinnytsya", "Winniza");
         phoneticallyIdentical("Vinnytsya", "Винница");
         phoneticallyIdentical("Vinnytsya", "Вінниця");
 
-        phoneticallyIdentical("Dniprodzerzhyns'k", "Dneprodsershinsk");
-        phoneticallyIdentical("Dniprodzerzhyns'k", "Dneprodzerzhinsk");
-        phoneticallyIdentical("Dniprodzerzhyns'k", "Dneprodzherzhinsk");
-        phoneticallyIdentical("Dniprodzerzhyns'k", "Dnieprodzerzhynsk");
-        phoneticallyIdentical("Dniprodzerzhyns'k", "Dniprodzerzhynsk");
-        phoneticallyIdentical("Dniprodzerzhyns'k", "Dniprodzerzhyns’k");
-        phoneticallyIdentical("Dniprodzerzhyns'k", "Днепродзержинск");
+        phoneticallyIdentical("Dneprodzerzhinsk", "Dneprodsershinsk");
+        phoneticallyIdentical("Dneprodzerzhinsk", "Dneprodzherzhinsk");
+        phoneticallyIdentical("Dneprodzerzhinsk", "Dnieprodzerzhynsk");
+        phoneticallyIdentical("Dneprodzerzhinsk", "Днепродзержинск");
 
         phoneticallyIdentical("Zrenjanin", "Зренянин");
         phoneticallyIdentical("Zrenjanin", "Зрењанин");
 
-        phoneticallyIdentical("Trešnjevac", "Трешњевац");
-
-        phoneticallyIdentical("Koprivnitsa", "Koprivnicza");
         phoneticallyIdentical("Koprivnitsa", "Kopriwnitza");
         phoneticallyIdentical("Koprivnitsa", "Копривница");
         phoneticallyIdentical("Koprivnitsa", "Копривниця");
@@ -58,14 +51,11 @@ public class PhoneticEncodingTests {
         phoneticallyIdentical("Qiryat Yam", "Kiryat Yam");
         phoneticallyIdentical("Qiryat Yam", "Kirjat Jam");
         phoneticallyIdentical("Qiryat Yam", "Кирьят-Ям");
-        phoneticallyIdentical("Qiryat Yam", "קריית ים");
-        phoneticallyIdentical("Qiryat Yam", "קרית ימ");
 
         phoneticallyIdentical("Bet She'an", "Beit Shean");
         phoneticallyIdentical("Bet She'an", "Beit She'an");
         phoneticallyIdentical("Bet She'an", "Beït Shéan");
         phoneticallyIdentical("Bet She'an", "Bet Sche’an");
-        phoneticallyIdentical("Bet She'an", "בית שאן");
     }
 
     private static void phoneticallyIdentical(String a, String b) {

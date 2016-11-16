@@ -1,5 +1,6 @@
 package com.ontotext.ehri;
 
+import com.ontotext.ehri.phapp.PhoneticApproximator;
 import gate.*;
 import gate.annotation.AnnotationFactory;
 import gate.annotation.DefaultAnnotationFactory;
@@ -15,8 +16,8 @@ import gate.util.InvalidOffsetException;
 import gate.util.SimpleFeatureMapImpl;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
-import org.apache.commons.codec.language.ColognePhonetic;
 
+import java.io.File;
 import java.text.Normalizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,7 +83,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
     private static final Pattern SPACE_SEQUENCE = Pattern.compile("\\s+");
 
     // phonetic encoder
-    private static final StringEncoder ENCODER = new ColognePhonetic();
+    private static final StringEncoder ENCODER = new PhoneticApproximator(new File(AccessPointAtomizerPR.class.getResource("/phapp/geonames.subs").getFile()));
 
     // name of the phonetic encoding feature
     private static final String ENCODING_FEATURE = "phoneticEncoding";
