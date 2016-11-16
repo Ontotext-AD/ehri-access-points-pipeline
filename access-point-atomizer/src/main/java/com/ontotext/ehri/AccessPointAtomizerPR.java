@@ -17,7 +17,6 @@ import gate.util.SimpleFeatureMapImpl;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
-import java.io.File;
 import java.text.Normalizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,7 +82,7 @@ public class AccessPointAtomizerPR extends AbstractLanguageAnalyser {
     private static final Pattern SPACE_SEQUENCE = Pattern.compile("\\s+");
 
     // phonetic encoder
-    private static final StringEncoder ENCODER = new PhoneticApproximator(new File(AccessPointAtomizerPR.class.getResource("/phapp/geonames.subs").getFile()));
+    private static final StringEncoder ENCODER = new PhoneticApproximator(AccessPointAtomizerPR.class.getResourceAsStream("/phapp/geonames.subs"));
 
     // name of the phonetic encoding feature
     private static final String ENCODING_FEATURE = "phoneticEncoding";

@@ -3,10 +3,8 @@ package com.ontotext.ehri.phapp;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.StringEncoder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.Scanner;
 import java.util.SortedMap;
@@ -19,10 +17,18 @@ public class PhoneticApproximator implements StringEncoder {
 
     private SortedMap<String, String> substitutions;
 
-    public PhoneticApproximator(File substitutionsTSV) {
+    public PhoneticApproximator(File substitutionsTSV) throws FileNotFoundException {
+        this(new FileReader(substitutionsTSV));
+    }
+
+    public PhoneticApproximator(InputStream substitutionsTSV) {
+        this(new InputStreamReader(substitutionsTSV, StandardCharsets.UTF_8));
+    }
+
+    public PhoneticApproximator(Reader substitutionsTSV) {
         substitutions = new TreeMap<String, String>(LENGTH_COMPARATOR);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(substitutionsTSV))) {
+        try (BufferedReader reader = new BufferedReader(substitutionsTSV)) {
             String line;
 
             while ((line = reader.readLine()) != null) {
@@ -75,7 +81,13 @@ public class PhoneticApproximator implements StringEncoder {
         }
 
         System.out.println("creating encoder");
-        PhoneticApproximator approximator = new PhoneticApproximator(new File(args[0]));
+        PhoneticApproximator approximator = null;
+        try {
+            approximator = new PhoneticApproximator(new File(args[0]));
+        } catch (FileNotFoundException e) {
+            System.err.println("cannot find substitutions TSV file: " + args[0]);
+            System.exit(1);
+        }
 
         String safeWord = "stop";
         System.out.println("enter word to encode or \"" + safeWord + "\" to stop");
