@@ -163,7 +163,7 @@ public class PhoneticModel {
     /**
      * Normalize a word or return empty string if it contains weird letters.
      */
-    protected static String normalize(String word) {
+    public static String normalize(String word) {
         if (! scriptIsAllowed(word)) return "";
         String result = unidecode(word);
         result = result.toLowerCase();
@@ -174,7 +174,7 @@ public class PhoneticModel {
     /**
      * Return true if the word contains only allowed characters.
      */
-    private static boolean scriptIsAllowed(String word) {
+    public static boolean scriptIsAllowed(String word) {
         for (int i = 0; i < word.length(); i++) if (! ALLOWED_SCRIPTS.contains(Character.UnicodeScript.of(word.codePointAt(i)))) return false;
         return true;
     }
@@ -182,7 +182,7 @@ public class PhoneticModel {
     /**
      * Remove repeated letters and non-letters from a string.
      */
-    private static String squeeze(String s) {
+    public static String squeeze(String s) {
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < s.length(); i++) {

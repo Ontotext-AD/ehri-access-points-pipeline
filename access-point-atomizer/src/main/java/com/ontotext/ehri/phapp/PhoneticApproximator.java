@@ -56,6 +56,13 @@ public class PhoneticApproximator implements StringEncoder {
         }
     }
 
+    /**
+     * Initialize encoder from a sorted map with extracted substitutions.
+     */
+    public PhoneticApproximator(SortedMap<String, String> substitutions) {
+        this.substitutions = substitutions;
+    }
+
     @Override
     public Object encode(Object o) throws EncoderException {
         if (o instanceof String) return encode((String) o);
