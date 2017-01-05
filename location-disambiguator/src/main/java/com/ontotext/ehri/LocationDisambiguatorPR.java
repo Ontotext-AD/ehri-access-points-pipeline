@@ -18,14 +18,12 @@ import java.util.*;
 public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
     private static final String GEONAMES_ID_PREFIX = "http://sws.geonames.org/";
     private static final String GEONAMES_ID_SUFFIX = "/";
-    private static final String GEONAMES_TYPE_PREFIX = "http://www.geonames.org/ontology#";
 
     private static final String ID_FEATURE_NAME = "inst";
-    private static final String TYPE_FEATURE_NAME = "class";
+    private static final String TYPE_FEATURE_NAME = "code";
     private static final String LATITUDE_FEATURE_NAME = "latitude";
     private static final String LONGITUDE_FEATURE_NAME = "longitude";
     private static final String POPULATION_FEATURE_NAME = "population";
-    private static final String LINKS_FEATURE_NAME = "wikipediaLinks";
     private static final String ANCESTORS_FEATURE_NAME = "ancestors";
 
     private static final Set<String> REQUIRED_CANDIDATE_FEATURES = new HashSet<String>();
@@ -98,7 +96,7 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
             // collect candidate locations at each lookup
             Set<Integer> addedAnnotationIDs = new HashSet<Integer>();
             AnnotationSet candidatesInContext = candidateAnnotationSet.get(context.getStartNode().getOffset(), context.getEndNode().getOffset());
-            for (Annotation lookup : candidatesInContext) {
+            for (Annotation lookup : leftmostLongest(candidatesInContext)) {
                 if (addedAnnotationIDs.contains(lookup.getId())) continue;
 
                 // collect candidate locations at this lookup
@@ -107,15 +105,14 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                 for (Annotation candidate : candidatesInLookup) {
                     FeatureMap candidateFeatures = candidate.getFeatures();
                     Object instFeature = candidateFeatures.get(ID_FEATURE_NAME);
-                    Object classFeature = candidateFeatures.get(TYPE_FEATURE_NAME);
+                    Object typeFeature = candidateFeatures.get(TYPE_FEATURE_NAME);
                     Object ancestorsFeature = candidateFeatures.get(ANCESTORS_FEATURE_NAME);
                     Object latitudeFeature = candidateFeatures.get(LATITUDE_FEATURE_NAME);
                     Object longitudeFeature = candidateFeatures.get(LONGITUDE_FEATURE_NAME);
                     Object populationFeature = candidateFeatures.get(POPULATION_FEATURE_NAME);
-                    Object wikipediaLinksFeature = candidateFeatures.get(LINKS_FEATURE_NAME);
 
                     // should not happen according to GATE documentation
-                    if (instFeature == null || classFeature == null || ancestorsFeature == null || latitudeFeature == null || longitudeFeature == null) {
+                    if (instFeature == null || typeFeature == null || ancestorsFeature == null || latitudeFeature == null || longitudeFeature == null) {
                         throw new ExecutionException("GATE sucks");
                     }
 
@@ -123,9 +120,8 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                     String url = (String) instFeature;
                     int id = Integer.parseInt(url.substring(GEONAMES_ID_PREFIX.length(), url.length() - GEONAMES_ID_SUFFIX.length()));
 
-                    // parse type from class
-                    String type = (String) classFeature;
-                    type = type.substring(GEONAMES_TYPE_PREFIX.length());
+                    // parse type
+                    String type = (String) ((Collection) typeFeature).iterator().next();
 
                     // parse latitude and longitude
                     double latitude = Double.parseDouble((String) ((Collection) latitudeFeature).iterator().next());
@@ -135,10 +131,6 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                     long population = 0;
                     if (populationFeature != null) population = Long.parseLong((String) ((Collection) populationFeature).iterator().next());
 
-                    // parse the number of links if present
-                    int numLinks = 0;
-                    if (wikipediaLinksFeature != null) numLinks = ((Collection) wikipediaLinksFeature).size();
-
                     // parse the ancestor IDs
                     Set<Integer> ancestors = new HashSet<Integer>();
                     for (Object ancestorsFeatureItem : (Collection) ancestorsFeature) {
@@ -147,7 +139,7 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
                     }
 
                     // add location to the set of candidates
-                    candidates.add(new Location(id, type, latitude, longitude, population, numLinks, ancestors));
+                    candidates.add(new Location(id, type, latitude, longitude, population, ancestors));
                     addedAnnotationIDs.add(candidate.getId());
                 }
 
@@ -173,6 +165,34 @@ public class LocationDisambiguatorPR extends AbstractLanguageAnalyser {
             context.getFeatures().put(LATITUDE_FEATURE_NAME, centerCoordinates[0]);
             context.getFeatures().put(LONGITUDE_FEATURE_NAME, centerCoordinates[1]);
         }
+    }
+
+    private static Set<Annotation> leftmostLongest(Set<Annotation> annotations) {
+        if (annotations.size() < 2) return annotations;
+
+        Set<Annotation> sorted = new TreeSet<Annotation>(new Comparator<Annotation>() {
+
+            @Override
+            public int compare(Annotation a, Annotation b) {
+
+                // compare start offsets
+                int startComparison = a.getStartNode().getOffset().compareTo(b.getStartNode().getOffset());
+                if (startComparison != 0) return startComparison;
+
+                // compare lengths
+                int lengthComparison = Long.compare(
+                        b.getEndNode().getOffset() - b.getStartNode().getOffset(),
+                        a.getEndNode().getOffset() - a.getStartNode().getOffset()
+                );
+                if (lengthComparison != 0) return lengthComparison;
+
+                // ensure consistency
+                return a.getId().compareTo(b.getId());
+            }
+        });
+
+        sorted.addAll(annotations);
+        return sorted;
     }
 
     /**

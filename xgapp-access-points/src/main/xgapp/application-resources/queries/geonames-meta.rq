@@ -2,15 +2,13 @@ PREFIX geo: <http://www.geonames.org/ontology#>
 PREFIX pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?concept ?type ?latitude ?longitude ?ancestors ?population ?wikipediaLinks WHERE {
+SELECT DISTINCT ?concept (geo:Feature AS ?type) ?code ?latitude ?longitude ?ancestors ?population WHERE {
     ?concept rdf:type geo:Feature.
-    ?concept geo:featureCode ?type.
+    ?concept geo:featureCode ?code.
     ?concept geo:featureClass ?class.
     ?concept pos:lat ?latitude.
     ?concept pos:long ?longitude.
-
     OPTIONAL { ?concept geo:population ?population }
-    OPTIONAL { ?concept geo:wikipediaArticle ?wikipediaLinks }
 
     # allow only specific classes and codes globally
     FILTER(?class = geo:A || ?class = geo:P
@@ -26,7 +24,9 @@ SELECT ?concept ?type ?latitude ?longitude ?ancestors ?population ?wikipediaLink
         ?concept geo:countryCode ?country.
         FILTER(?type = geo:A.ADM1 || ?type = geo:A.ADM1H
             || ?type = geo:A.PCL || ?type = geo:A.PCLD || ?type = geo:A.PCLF || ?type = geo:A.PCLH || ?type = geo:A.PCLI || ?type = geo:A.PCLS
+            || ?type = geo:H.STM
             || ?type = geo:P.PPLC || ?type = geo:P.PPLCH || ?type = geo:P.PPLA
+            || ?type = geo:S.SCH
             || ?country = "AL"
             || ?country = "AT"
             || ?country = "BA"
@@ -66,6 +66,16 @@ SELECT ?concept ?type ?latitude ?longitude ?ancestors ?population ?wikipediaLink
         FILTER(!BOUND(?country))
     }
 
-    # get all ancestors transitively
-    ?concept geo:parentFeature+ ?ancestors.
+    # get up to 10 ancestors
+    ?concept geo:parentFeature
+           | geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+           | geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature/geo:parentFeature
+        ?ancestors.
 }
