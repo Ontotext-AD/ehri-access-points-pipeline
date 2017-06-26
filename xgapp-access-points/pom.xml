@@ -10,8 +10,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <groupId>com.ontotext.ehri.geo</groupId>
     <artifactId>xgapp-access-points</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
 
     <build>
         <finalName>${project.artifactId}</finalName>
